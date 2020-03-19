@@ -1,0 +1,131 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      4905,        123]
+NotebookOptionsPosition[      4598,        109]
+NotebookOutlinePosition[      4952,        125]
+CellTagsIndexPosition[      4909,        122]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[{
+ RowBox[{"SetDirectory", "[", 
+  "\"\</Users/hcorn/Dropbox/Maize_ATLAS_share/ParallelSelection/GBS/Data_\
+analysis/RABBIT/RABBIT_Packages\>\"", "]"}], "\n", 
+ StyleBox[
+  RowBox[{"Needs", "[", "\"\<MagicReconstruct`\>\"", "]"}], 
+  "Input"], "\[IndentingNewLine]", 
+ StyleBox[
+  RowBox[{
+   RowBox[{"SetDirectory", "[", 
+    RowBox[{"NotebookDirectory", "[", "]"}], "]"}], "\[IndentingNewLine]"}], 
+  "Input"], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"model", " ", "=", " ", "\"\<jointModel\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"estfun", " ", "=", " ", "\"\<origPosteriorDecoding\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"magicsnp", " ", "=", " ", 
+    RowBox[{"Import", "[", 
+     RowBox[{
+     "\"\<SimData_Rsq50pct_chrom1_RABBIT_input.csv\>\"", ",", "\"\<CSV\>\""}],
+      "]"}]}], ";"}], " ", "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"popdesign", " ", "=", " ", 
+    RowBox[{
+    "prior", " ", "calculated", " ", "based", " ", "on", " ", "specific", " ",
+      "population", " ", "pedigree", " ", 
+     RowBox[{"see", ":", " ", 
+      RowBox[{"Zheng", " ", "et", " ", 
+       RowBox[{"al", ".", " ", "2015"}]}]}]}]}], 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"popdesign", " ", "=", " ", 
+   RowBox[{"{", 
+    RowBox[{"{", 
+     RowBox[{
+     "0.156656", ",", "0.000930313", ",", "0.582508", ",", "2.61506", ",", 
+      "0.582507", ",", "2.61505"}], "}"}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"magicReconstruct", "[", 
+  RowBox[{"magicsnp", ",", "model", ",", "popdesign", ",", " ", 
+   RowBox[{"reconstructAlgorithm", "\[Rule]", "estfun"}], ",", 
+   RowBox[{
+   "outputFileID", "\[Rule]", 
+    "\"\<SimData_Rsq50pct_chrom1_RABBIT_jointModel_OPD_output\>\""}], ",", 
+   RowBox[{"isPrintTimeElapsed", "\[Rule]", "True"}]}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+  "resultFile", "=", 
+   "\"\<SimData_Rsq50pct_chrom1_RABBIT_jointModel_OPD_output_magicReconstruct.\
+txt\>\""}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"summaryFile", "=", 
+   RowBox[{
+    RowBox[{"StringDrop", "[", 
+     RowBox[{"resultFile", ",", 
+      RowBox[{"-", "4"}]}], "]"}], "<>", "\"\<_Summary.csv\>\""}]}], ";", " ", 
+  RowBox[{"saveAsSummaryMR", "[", 
+   RowBox[{"resultFile", ",", "summaryFile"}], "]"}], 
+  ";"}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.733128170679484*^9, 3.733128189498996*^9}, {
+   3.7331295708328257`*^9, 3.7331295891995077`*^9}, {3.733129728276643*^9, 
+   3.7331297577269583`*^9}, {3.733129851206983*^9, 3.7331298564359093`*^9}, {
+   3.733129921092806*^9, 3.733129927368237*^9}, {3.733130014671776*^9, 
+   3.733130017425753*^9}, {3.733130267507827*^9, 3.733130269890637*^9}, {
+   3.7331303522229567`*^9, 3.733130355056026*^9}, {3.7331304719137897`*^9, 
+   3.733130474937813*^9}, {3.73313051787071*^9, 3.7331305205571957`*^9}, {
+   3.733130574931562*^9, 3.7331305771568117`*^9}, {3.7331306464603367`*^9, 
+   3.733130649360017*^9}, {3.735848435848894*^9, 3.7358484480271177`*^9}, {
+   3.73584880703321*^9, 3.7358488079994593`*^9}, {3.7358488586714497`*^9, 
+   3.735848891565434*^9}, 3.7405252560593567`*^9, {3.74052807999596*^9, 
+   3.74052810562994*^9}, {3.7410020725887337`*^9, 3.741002083343528*^9}, {
+   3.7634116696624107`*^9, 3.76341173902346*^9}, {3.76738558840243*^9, 
+   3.767385629794641*^9}, {3.767560763914571*^9, 3.767560775179434*^9}, {
+   3.770675730735527*^9, 3.770675742437755*^9}, {3.780866491027728*^9, 
+   3.780866549763486*^9}, {3.784633409433467*^9, 3.784633459246641*^9}, {
+   3.784633979444664*^9, 3.784634078133375*^9}, {3.784634147204515*^9, 
+   3.7846341529345503`*^9}, {3.78463419082402*^9, 3.7846342136551323`*^9}, {
+   3.784634401011806*^9, 3.784634404118421*^9}, {3.790601164508065*^9, 
+   3.79060124310609*^9}, 3.79060132388804*^9, {3.79060152817033*^9, 
+   3.79060168383934*^9}, {3.792276648484619*^9, 3.7922766501321774`*^9}, {
+   3.792276690893585*^9, 
+   3.79227671442662*^9}},ExpressionUUID->"b0bad5b8-7190-4262-86d2-\
+029e395fd67e"]
+},
+WindowSize->{808, 911},
+WindowMargins->{{Automatic, 312}, {Automatic, 3}},
+FrontEndVersion->"11.3 for Mac OS X x86 (32-bit, 64-bit Kernel) (March 5, \
+2018)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 4036, 87, 409, "Input",ExpressionUUID->"b0bad5b8-7190-4262-86d2-029e395fd67e"]
+}
+]
+*)
+

@@ -6,7 +6,7 @@ Here we introduce SPEARS, a pipeline for simulation-based performance appraisal 
 
 ## Description and user requirements for each script
 
-We have provided parent data (founder_key.txt) that can be used for running through each script. 
+We have provided parent data (founder_key.txt) that can be used for running through each script. These scripts need to be run in order.
 
 1. **1_SAEGUS.py**
 

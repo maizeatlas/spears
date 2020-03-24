@@ -3,6 +3,7 @@
 # Required Packages
 library("ggplot2")
 library("ggExtra")
+library("ggpubr") ## used for stat_cor
 
 # User inputs
 
@@ -21,14 +22,14 @@ all_CO <- read.csv(co, head=T)
 
 tiff("../For_submission/Figure_S5.tiff", width=6 , height=6, units="in", compression="none", res=600)
 
-p <- ggplot(all_CO) +
-  geom_point( 
-    aes(x=known_CO, y=OVD_CO)) +
-  xlim(175,325) + 
-  ylim(175,325) +
-  geom_hline(yintercept = mean(all_CO$OVD_CO), color="red") +
-  geom_vline(xintercept = mean(all_CO$known_CO), color="red") +
-  xlab("Known") + ylab("Inferred by RABBIT") + 
+p <- ggplot(all_CO, aes(x=known_CO, y=OVD_CO)) +
+  geom_point() +
+  stat_cor(method = "pearson") +
+  scale_x_continuous(limits=c(175,325), breaks=c(200,250,round(mean(all_CO$known_CO),0),300)) +
+  scale_y_continuous(limits=c(175,325), breaks=c(200,round(mean(all_CO$OVD_CO),0),250,300)) +
+  geom_hline(yintercept = round(mean(all_CO$OVD_CO),0), color="grey", size=0.75) +
+  geom_vline(xintercept = round(mean(all_CO$known_CO),0), color="grey", size=0.75) +
+  xlab("Expected (simulation)") + ylab("Observed (RABBIT)") + 
   theme(plot.background = element_blank()
         ,legend.direction="vertical"
         ,legend.key.size = unit(0.4, "cm")
@@ -46,7 +47,7 @@ p <- ggplot(all_CO) +
         ,plot.margin=unit(c(0.25,0.25,1,0.5), "cm"),
         aspect.ratio = 1
   )
-ggMarginal(p, type = "histogram")
+ggMarginal(p, type = "histogram", color = "white", binwidth = 2)
 
 dev.off()
 

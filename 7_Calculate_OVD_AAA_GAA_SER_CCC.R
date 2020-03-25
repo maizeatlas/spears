@@ -9,11 +9,11 @@ library("gdata")
 
 # User inputs
 # Working directory
-wd <- "~/working/directory/"
+wd <- "~/working/directory"
 # Name of founder key data
 fd <- "founder_key.txt"
 # Known Data (output from script 7)
-kd <- "known_AAA_simdata.csv"
+kd <- "known_AAA_gbsonly.csv"
 # Number of chromosomes
 chrom <- 10
 # Number of samples
@@ -112,18 +112,19 @@ for(i in 1:sn){
 ## Calculate AAA
 ########
 
+for_AAA <- datalist3
 AAA_bymarker <- list()
 AAA_bysample <- list()
 for (c in 1:chrom){
   
-  datalist3[[c]]$OVD_match <- ifelse(paste(datalist3[[c]]$OVD_founder1,"|", datalist3[[c]]$OVD_founder2,sep="") == paste(datalist3[[c]]$sim_founder1,"|",datalist3[[c]]$sim_founder2,sep=""), 1,
-                                     ifelse(paste(datalist3[[c]]$OVD_founder1,"|", datalist3[[c]]$OVD_founder2,sep="") == paste(datalist3[[c]]$sim_founder2,"|",datalist3[[c]]$sim_founder1,sep=""),1,
-                                            ifelse((datalist3[[c]]$OVD_founder1 == datalist3[[c]]$sim_founder1 | datalist3[[c]]$OVD_founder1 == datalist3[[c]]$sim_founder2),0.5,
-                                                   ifelse((datalist3[[c]]$OVD_founder2 == datalist3[[c]]$sim_founder1 | datalist3[[c]]$OVD_founder2 == datalist3[[c]]$sim_founder2),0.5,0))))
+  for_AAA[[c]]$OVD_match <- ifelse(paste(for_AAA[[c]]$OVD_founder1,"|", for_AAA[[c]]$OVD_founder2,sep="") == paste(for_AAA[[c]]$sim_founder1,"|",for_AAA[[c]]$sim_founder2,sep=""), 1,
+                                     ifelse(paste(for_AAA[[c]]$OVD_founder1,"|", for_AAA[[c]]$OVD_founder2,sep="") == paste(for_AAA[[c]]$sim_founder2,"|",for_AAA[[c]]$sim_founder1,sep=""),1,
+                                            ifelse((for_AAA[[c]]$OVD_founder1 == for_AAA[[c]]$sim_founder1 | for_AAA[[c]]$OVD_founder1 == for_AAA[[c]]$sim_founder2),0.5,
+                                                   ifelse((for_AAA[[c]]$OVD_founder2 == for_AAA[[c]]$sim_founder1 | for_AAA[[c]]$OVD_founder2 == for_AAA[[c]]$sim_founder2),0.5,0))))
 
-  AAA_bymarker[[c]] <- aggregate(datalist3[[c]][,8], list(datalist3[[c]]$snpID), mean)
+  AAA_bymarker[[c]] <- aggregate(for_AAA[[c]][,8], list(for_AAA[[c]]$snpID), mean)
   AAA_bymarker[[c]] <- rename.vars(AAA_bymarker[[c]],"Group.1","snpID")
-  AAA_bysample[[c]] <- aggregate(datalist3[[c]][,8], list(datalist3[[c]]$sample), mean)
+  AAA_bysample[[c]] <- aggregate(for_AAA[[c]][,8], list(for_AAA[[c]]$sample), mean)
   AAA_bysample[[c]] <- rename.vars(AAA_bysample[[c]],"Group.1","sample")
 
 
@@ -151,12 +152,11 @@ write.csv(AAA_bymarker,"AAA_by_marker_OVD.csv",row.names = F)
 #####
 
 AAG <- list()
-AAG_bymarker <- list()
-AAG_bysample <- list()
-key_sub <- as.data.frame(lapply(key, gsub, pattern='/[A-Z]', replacement=''))
+key[,6:ncol(key)] <- lapply(key[,6:ncol(key)], gsub, pattern='/[A-Z]', replacement='')
+
 founders <- names(key[,6:ncol(key)])
 for (c in 1:chrom){
-  key_sub2 <- key_sub[which(key_sub$snpID %in% SNPkey[[c]]$SNP),]
+  key_sub2 <- key[which(key$snpID %in% SNPkey[[c]]$SNP),]
   temp <- list()
   for (i in 1:sn){
     
@@ -226,12 +226,13 @@ for (j in 1:10){
 }
 
 allrunsum2 <- do.call("cbind",allrunsum)
-mean(allrunsum2) #SER
 SER <- as.data.frame(rowMeans(allrunsum2))
 SER$sample <- row.names(allrunsum2)
 names(SER) <- c("SER","sample")
 SER$SER <- 1-SER$SER
-write.csv(SER,"SER_OVD_bysample_14MAR20.csv",row.names = F)
+mean(SER$SER) #mean SER
+sd(SER$SER) #sd of SER
+write.csv(SER,"SER_OVD_bysample.csv",row.names = F)
 
 
 #####

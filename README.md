@@ -1,8 +1,12 @@
-# spears
+# SPEARS
 Standard Performance Evaluation of Ancestral Reconstruction through Simulation
 
 # Overview
-Here we introduce SPEARS, a pipeline for simulation-based performance appraisal of ancestral haplotype inference. We developed SPEARS to allow for start-to-finish analysis of a given population through simulation with SAEGUS, imputation with MACH, and ancestral haplotype reconstruction with RABBIT. Performance appraisal is based on four metrics of accuracy: ancestral inference, genotype inference, haplotype phasing and chromosomal crossovers.
+Here we introduce SPEARS, a pipeline for simulation-based performance appraisal of ancestral haplotype inference. SPEARS determines the reliablability of inferred ancestral haplotype maps. It can be used to assess the performance of a new method or tool and to examine expectations for conceived or existing popultion designs. 
+
+Simulations are used to generate genome-wide haplotype maps for many individuals. This truth data is retained but also modified (in the pipeline) to mimic sparse genotype data that enters the standard multi-step process of imputation and haplotype infernece. Comparing the expected data to the inferred data allows the results to be benchmarked.
+
+We developed SPEARS to allow for start-to-finish analysis of a given population through simulation with SAEGUS, imputation with MACH, and ancestral haplotype reconstruction with RABBIT. Performance appraisal is based on four metrics of accuracy: ancestral inference, genotype inference, haplotype phasing and chromosomal crossovers.
 
 ## Description and user requirements for each script
 

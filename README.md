@@ -7,13 +7,13 @@ SPEARS was developed and coded by Heather Manching under the guidance of Dr. Ran
 # Overview
 Here we introduce SPEARS, a pipeline for simulation-based performance appraisal of ancestral haplotype inference. SPEARS determines the reliablability of inferred ancestral haplotype maps. It can be used to assess the performance of a new method or tool and to examine expectations for conceived or existing popultion designs. 
 
-Simulations are used to generate genome-wide haplotype maps for many individuals. This truth data is retained but also modified (in the pipeline) to mimic sparse genotype data that enters the standard multi-step process of imputation and haplotype infernece. Comparing the expected data to the inferred data allows the results to be benchmarked.
+Simulations are used to generate genome-wide haplotype maps for many individuals. This truth data is retained but also modified (in the pipeline) to mimic sparse genotype data that enters the standard multi-step process of imputation and haplotype reconstruction. Comparing the expected data to the inferred data allows the results to be benchmarked.
 
-We developed SPEARS to allow for start-to-finish analysis of a given population through simulation with SAEGUS, imputation with MACH, and ancestral haplotype reconstruction with RABBIT. Performance appraisal is based on four metrics of accuracy: ancestral inference, genotype inference, haplotype phasing and chromosomal crossovers.
+We developed SPEARS to allow for start-to-finish analysis of a given population through simulation with SAEGUS, imputation with MaCH, and ancestral haplotype reconstruction with RABBIT. Performance appraisal is based on four metrics of accuracy: ancestral assignment accuracy, genotype assignment accuracy, switch-error rate (haplotype phasing) and the correlation in crossover counts.
 
 ## Description and user requirements for each script
 
-We have provided parent data (founder_key.txt) that can be used for running through each script. These scripts need to be run in order.
+We have provided parent data (founder_key.txt) that can be used for running through the pipeline. These scripts need to be run in order.
 
 1. **1_SAEGUS.py**
 
@@ -32,7 +32,7 @@ This script is specific for the test population described in the manuscript. It 
 
 2. **2_SAEGUS_to_MACH_format.R**
 
-Takes output from 1_SAEGUS.py (formatted as described above) and reformats for use in MACH. Creates a subfolder in the working directory called MACH and within this subfolder creates a folder for each chromosome. In each chromosome folder, it creates 4 input files that are used by MACH for imputation: 1) founders_chrom_n.haplos, 2) founders_chrom_n.snps, 3) simdata_chrom_n.dat, 4) simdata_chrom_n.PED.
+Takes output from 1_SAEGUS.py (formatted as described above) and reformats for use in MaCH. Creates a subfolder in the working directory called MaCH and within this subfolder creates a folder for each chromosome. In each chromosome folder, it creates 4 input files that are used by MaCH for imputation: 1) founders_chrom_n.haplos, 2) founders_chrom_n.snps, 3) simdata_chrom_n.dat, 4) simdata_chrom_n.PED.
 
 * **Required Input Files**
   * Simulated output (from 1_SAEGUS.py) (example: simuPOP_n1000.csv)
@@ -41,7 +41,7 @@ Takes output from 1_SAEGUS.py (formatted as described above) and reformats for u
 
 3. **3_MACH_sample_run_script.sh**
 
-Takes output from 2_SAEGUS_to_MACH_format.R and performs imputation using MACH. This is a two-step process (step1: estimate model parameters, step2: perform imputation). See MACH tutorial for details on user requirements. This script runs 1000 iterations (-r 1000). **Needs to be modified and run for each chromosome.**
+Takes output from 2_SAEGUS_to_MaCH_format.R and performs imputation using MaCH. This is a two-step process (step1: estimate model parameters, step2: perform imputation). See MaCH tutorial for details on user requirements. This script runs 1000 iterations (-r 1000). **Needs to be modified and run for each chromosome.**
 
 * **Required Input Files**
   * Output from 2_SAEGUS_to_MACH_format.R 

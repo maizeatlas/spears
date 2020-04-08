@@ -1,6 +1,9 @@
 # SPEARS
 Standard Performance Evaluation of Ancestral Reconstruction through Simulation
 
+# Credits
+SPEARS was developed and coded by Heather Manching under the guidance of Dr. Randall J. Wisser. This work was supported by the Agriculture and Food Research Initiative Grant Nos. 2011-67003-30342 and 2018-67011-28052 from the USDA-NIFA. We thank Dr. Chaozhi Zheng for support in operating RABBIT.
+
 # Overview
 Here we introduce SPEARS, a pipeline for simulation-based performance appraisal of ancestral haplotype inference. SPEARS determines the reliablability of inferred ancestral haplotype maps. It can be used to assess the performance of a new method or tool and to examine expectations for conceived or existing popultion designs. 
 

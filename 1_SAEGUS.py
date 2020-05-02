@@ -29,7 +29,7 @@ np.set_printoptions(suppress=True, precision=3)
 from simuPOP.utils import saveCSV
 
 ### Read in Genetic Map for markers to be simulated
-genetic_map = np.array(pd.read_csv('founder_key_gbsonly_28FEB20.txt', sep='\t'))
+genetic_map = np.array(pd.read_csv('founder_key_28FEB20.txt', sep='\t'))
 
 ### Designate Chromosome column and chromosome lengths
 chromosome_column = np.array(genetic_map[:, 1], dtype=np.int)
@@ -42,7 +42,8 @@ print(chromosome_lengths) #check marker number for each chromosome
 example_pop = sim.Population(size=7, ploidy=2, loci=chromosome_lengths)
 
 #Assign genotype as arbitrary number representing founder (for tracking) (0:n-1, n=number of founders)
-for i, ind in enumerate(example_pop.individuals()): ind.setGenotype([i])
+for i, ind in enumerate(example_pop.individuals()):
+    ind.setGenotype([i])
 
 #check genotype for individual 0, can repeat for all founders
 example_individual = example_pop.individual(0)

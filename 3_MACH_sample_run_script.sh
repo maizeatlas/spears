@@ -8,7 +8,7 @@
 
 ##MACH must be downloaded prior to use: http://csg.sph.umich.edu/abecasis/MACH/download/
 
-##This is specific to our data and for only one chromosome. You can run for all by changing the script and running in each MACH/chrom# folder created from SAEGUS_to_MACH_format.R script
+##This is specific to data in manuscript and for only one chromosome. You can run for all by changing the script and running in each MACH/chrom# folder created from SAEGUS_to_MACH_format.R script
 
 ##Step 1: navigate to working directory and run following script (designate where MACH is downloaded)
 

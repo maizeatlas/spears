@@ -24,6 +24,7 @@ rsq <- 0.5
 # mlinfo files: Info on markers, SNP, each allele, Freq of allele1, MAF, Quality, Rsq
 # If MACH is run in Linux, output will need to be unzipped prior to run
 mlinfo <- list()
+#Read in mlinfo files for each chromosome
 for (i in 1:chrom){
   
   setwd(paste0(wd,'/MACH/chrom',i))
@@ -31,13 +32,14 @@ for (i in 1:chrom){
   
 }
 
-mlinfo2 <- do.call(rbind,mlinfo)
+mlinfo2 <- do.call(rbind,mlinfo) #Append all chromosomes together
 hist(mlinfo2$Rsq) #Check R-square distribution from MACH output
 
-mlinfo3 <- subset(mlinfo2, mlinfo2$Rsq>=rsq)
-mlinfo3$SNP <- gsub("SNP",replacement = "",mlinfo3$SNP)
+mlinfo3 <- subset(mlinfo2, mlinfo2$Rsq>=rsq) #Subset mlinfo based on R-square threshold
+mlinfo3$SNP <- gsub("SNP",replacement = "",mlinfo3$SNP) #Format SNP IDs for merging later
 
-### Imputed genotypes
+### Imputed genotypes from MACH
+#Read in each mlgeno file for each chromosome and reformat
 mlgeno <- list()
 for (i in 1:chrom){
   
@@ -48,16 +50,18 @@ for (i in 1:chrom){
   
 }
 
+#Get sample ids from output
 mlgeno_col <- mlgeno[[1]]
 mlgeno_col <- cbind.data.frame(sample = mlgeno_col[,1])
 
-
+#Combine sample IDs with corresponding genotype
 for (i in 1:chrom){
   
   mlgeno_col <- cbind.data.frame(mlgeno_col,mlgeno[[i]][2:ncol(mlgeno[[i]])])  
   
 }
 
+#Assign sample IDs to corresponding columns
 mlgeno2 <- mlgeno_col
 colnames(mlgeno2) <- c("sample", as.character(mlinfo2$SNP))
 orig_mlgeno <- mlgeno2
@@ -67,22 +71,22 @@ orig_mlgeno <- mlgeno2
 setwd(wd)
 
 #Founder Data
-key <- read.table(fd, head=T, stringsAsFactors = FALSE, sep="\t")
-key <- rename.vars(key,"chr","CHROM")
-key <- key[which(key$snpID %in% mlinfo3$SNP),]
-key2 <- separate(key, names(key[6]), c(paste(names(key[6]),".1",sep=""), paste(names(key[6]),".2",sep="")), sep="/")
+key <- read.table(fd, head=T, stringsAsFactors = FALSE, sep="\t") #Upload founder data
+key <- rename.vars(key,"chr","CHROM") #Rename chromosome column
+key <- key[which(key$snpID %in% mlinfo3$SNP),] #Subset based on markers kept after R-square filter
+key2 <- separate(key, names(key[6]), c(paste(names(key[6]),".1",sep=""), paste(names(key[6]),".2",sep="")), sep="/") #Separate the GT data for the first founder into separate alleles. The first allele from the first founder will be used as allele "1" for RABBIT formatting
 
 ##Formatting mlgeno data
-names <- as.character(mlgeno2$sample)
-look2 <- as.data.frame(t(mlgeno2[,2:ncol(mlgeno2)]))
-names(look2) <- names
-look2$snpID <- row.names(look2)
-look2$snpID <- gsub("SNP",replacement = "",look2$snpID)
-look2 <- look2[which(look2$snpID %in% mlinfo3$SNP),]
-test <- merge(look2,key2[,c(1,2,4)],by="snpID")
-test <- test[order(as.numeric(test$snpID)),]
+names <- as.character(mlgeno2$sample) #make sure sample ids are in character format
+look2 <- as.data.frame(t(mlgeno2[,2:ncol(mlgeno2)])) #transpose data into markers as rows and samples as columns
+names(look2) <- names #Set sample names
+look2$snpID <- row.names(look2) #set marker names
+look2$snpID <- gsub("SNP",replacement = "",look2$snpID) #Reformat snpID for RABBIT
+look2 <- look2[which(look2$snpID %in% mlinfo3$SNP),] #Make sure same markers in each set are being used
+test <- merge(look2,key2[,c(1,2,4)],by="snpID") #Merge snpID, CHROM, and cM to genotype data
+test <- test[order(as.numeric(test$snpID)),] #Check marker order
 
-#Run for sample columns
+#Run for sample columns, reformat GT data to exclude "/"
 for (a in 2:(sn+1)) {
   test[,a] <- sub("/", "", test[,a])
 }
@@ -92,10 +96,10 @@ dir.create("RABBIT")
 
 #Create header, founder, population data for RABBIT input, append, and write csv files for each chromosome
 for (i in 1:chrom){
-mlgeno <- subset(test,test$CHROM==i)
-mlgeno <- mlgeno[order(as.numeric(mlgeno$snpID)),]
-mlgeno <- as.data.frame(t(mlgeno[,2:(sn+1)]))
-key3 <- subset(key2,key2$CHROM==i)
+    mlgeno <- subset(test,test$CHROM==i) #subset chromosome
+    mlgeno <- mlgeno[order(as.numeric(mlgeno$snpID)),] #check marker order
+    mlgeno <- as.data.frame(t(mlgeno[,2:(sn+1)])) #transpose data so samples are rows and markers are columns
+    key3 <- subset(key2,key2$CHROM==i) #subset founder key for each chromosome
 
 #Formats genotypes to 11,12,22 (1 is the allele present in first founder (ParentA in this case) and 2 is the alternate allele)
 for (a in 1:ncol(mlgeno)) {
@@ -103,15 +107,15 @@ for (a in 1:ncol(mlgeno)) {
   mlgeno[,a] <- gsub("[A-Z]","2", mlgeno[,a])
 }
 look <- mlgeno
-colnames(look) <- subset(test,test$CHROM==i)$snpID
+colnames(look) <- subset(test,test$CHROM==i)$snpID #Assign snpIDs
 
 #founders
-mlgeno <- subset(key,key$CHROM==i)
-mlgeno <- mlgeno[order(mlgeno$snpID),]
+mlgeno <- subset(key,key$CHROM==i) #subset original founder key for each chromosome
+mlgeno <- mlgeno[order(mlgeno$snpID),] #check marker order
 mlgeno2 <- mlgeno
 
 #Subset founder columns
-mlgeno <- as.data.frame(t(mlgeno[,6:12]))
+mlgeno <- as.data.frame(t(mlgeno[,6:ncol(mlgeno)])) #transpose founder data to match pop data
 
 #Formats genotypes to 11,12,22 (1 is the first allele in first founder and 2 is the alternate allele)
 for (a in 1:ncol(mlgeno)) {
@@ -135,6 +139,7 @@ output.2 <- t(output.2)
 rownames(output.2)[1:3] <- c("SNP", "CHROM", "cM")
 colnames(output.2) <- colnames(look)
 
+#Append data and write output 
 output.3 <- as.matrix(rbind(output.2, mlgeno, look))
 write.table(output.3, paste0(wd,"/RABBIT/SimData_Rsq",rsq*100,"pct_chrom",i,"_RABBIT_input.csv",sep=""), sep=",",
             row.names=T,

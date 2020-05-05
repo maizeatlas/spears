@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      7419,        170]
-NotebookOptionsPosition[      7111,        156]
-NotebookOutlinePosition[      7465,        172]
-CellTagsIndexPosition[      7422,        169]
+NotebookDataLength[      7774,        178]
+NotebookOptionsPosition[      7466,        164]
+NotebookOutlinePosition[      7820,        180]
+CellTagsIndexPosition[      7777,        177]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -78,7 +78,14 @@ Cell[BoxData[
          RowBox[{"\"\<SimData_Rsq50pct_chrom\>\"", " ", "<>", " ", 
           RowBox[{"ToString", "[", "j", "]"}], " ", "<>", " ", 
           "\"\<_RABBIT_input.csv\>\""}], ",", "\"\<CSV\>\""}], "]"}]}], ";", 
-      " ", "\[IndentingNewLine]", 
+      " ", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"change", " ", "j"}], " ", "\[LessEqual]", " ", 
+        RowBox[{
+        "10", " ", "to", " ", "number", " ", "corresponding", " ", "to", " ", 
+         "the", " ", "number", " ", "of", " ", "chromosomes", " ", "to", " ", 
+         "run"}]}], "*)"}], "\[IndentingNewLine]", 
       RowBox[{"popdesign", " ", "=", " ", 
        RowBox[{"{", 
         RowBox[{"{", 
@@ -150,8 +157,9 @@ Cell[BoxData[
    3.7976311084746943`*^9}, {3.797631147244216*^9, 3.7976312470632973`*^9}, {
    3.797631287796517*^9, 3.797631325851644*^9}, 3.79763202534402*^9, {
    3.797632057237904*^9, 3.797632094967166*^9}, {3.797632141871846*^9, 
-   3.7976321629067574`*^9}, {3.797632555070087*^9, 
-   3.797632556291923*^9}},ExpressionUUID->"b0bad5b8-7190-4262-86d2-\
+   3.7976321629067574`*^9}, {3.797632555070087*^9, 3.797632556291923*^9}, {
+   3.79763277945394*^9, 
+   3.797632807085837*^9}},ExpressionUUID->"b0bad5b8-7190-4262-86d2-\
 029e395fd67e"]
 },
 WindowSize->{808, 911},
@@ -171,7 +179,7 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[558, 20, 6549, 134, 535, "Input",ExpressionUUID->"b0bad5b8-7190-4262-86d2-029e395fd67e"]
+Cell[558, 20, 6904, 142, 535, "Input",ExpressionUUID->"b0bad5b8-7190-4262-86d2-029e395fd67e"]
 }
 ]
 *)

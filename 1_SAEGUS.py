@@ -29,7 +29,7 @@ np.set_printoptions(suppress=True, precision=3)
 from simuPOP.utils import saveCSV
 
 ### Read in Genetic Map for markers to be simulated
-genetic_map = np.array(pd.read_csv('founder_key_28FEB20.txt', sep='\t'))
+genetic_map = np.array(pd.read_csv('test_founder_data_key.txt', sep='\t'))
 
 ### Designate Chromosome column and chromosome lengths
 chromosome_column = np.array(genetic_map[:, 1], dtype=np.int)
@@ -60,7 +60,7 @@ sim.tagID(example_pop)
 ### Create list of crossover probabilities from genetic map measured in centimorgans
 ### This is a collection of raw data parsers specific to a file with the following headers: locus, chr, agpv2, cM, namZmPRDA, namZmPRDS (although locus, agpv2, namZmPRDA, and namZmPRDS are dropped)
 tf = parse.RecomRates()
-recom_map = tf.parse_recombination_rates('founder_key_gbsonly_28FEB20.txt')
+recom_map = tf.parse_recombination_rates('test_founder_data_key.txt')
 
 ### Generate F1 data
 ### Set founders and designate number of offspring for F1
@@ -148,4 +148,4 @@ saveCSV(example_pop, filename='test_simuPOP_all.csv')
 #If you need to subsample to check (this samples 1000 random individuals from last generation)
 sub_sample = sim.sampling.drawRandomSample(example_pop,1000)
 ### Save 1000 sampled individuals
-saveCSV(sub_sample, filename='simdata_n1000_gbsonly_29FEB20.csv')
+saveCSV(sub_sample, filename='simdata_n1000_test_set.csv')

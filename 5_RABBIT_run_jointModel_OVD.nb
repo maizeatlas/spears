@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      6678,        164]
-NotebookOptionsPosition[      6370,        150]
-NotebookOutlinePosition[      6724,        166]
-CellTagsIndexPosition[      6681,        163]
+NotebookDataLength[      7419,        170]
+NotebookOptionsPosition[      7111,        156]
+NotebookOutlinePosition[      7465,        172]
+CellTagsIndexPosition[      7422,        169]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -33,7 +33,7 @@ Cell[BoxData[
    "\n", 
    StyleBox[
     RowBox[{"Needs", "[", "\"\<MagicReconstruct`\>\"", "]"}], "Input"], 
-   StyleBox["\[IndentingNewLine]", "Input"], 
+   "\[IndentingNewLine]", 
    RowBox[{"(*", 
     RowBox[{
      RowBox[{
@@ -43,12 +43,13 @@ Cell[BoxData[
      RowBox[{
      "needs", " ", "to", " ", "have", " ", "input", " ", "file", " ", "from", 
       " ", "4", "_MACH", "_to", "_RABBIT", 
-      RowBox[{"_format", ".", "R"}]}]}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"_format", ".", "R"}]}]}], "*)"}], 
+   StyleBox["\[IndentingNewLine]", "Input"], 
    StyleBox[
     RowBox[{"SetDirectory", "[", 
      RowBox[{"NotebookDirectory", "[", "]"}], "]"}], "Input"], 
-   StyleBox[" ", "Input"], "\[IndentingNewLine]", 
-   StyleBox["\[IndentingNewLine]", "Input"], 
+   StyleBox[" ", "Input"], 
+   StyleBox["\[IndentingNewLine]", "Input"], "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{"model", " ", "=", " ", "\"\<jointModel\>\""}], ";"}], " ", 
    RowBox[{"(*", 
@@ -65,63 +66,63 @@ Cell[BoxData[
      RowBox[{"can", " ", "be", " ", "origViterbiDecoding"}], ",", " ", 
      "origPosteriorDecoding", ",", " ", 
      RowBox[{"or", " ", "origPathSampling"}]}], "*)"}], "\[IndentingNewLine]", 
-   RowBox[{
-    RowBox[{"magicsnp", " ", "=", " ", 
-     RowBox[{"Import", "[", 
-      RowBox[{
-      "\"\<SimData_Rsq50pct_chrom1_RABBIT_input.csv\>\"", ",", 
-       "\"\<CSV\>\""}], "]"}]}], ";"}], " ", "\[IndentingNewLine]", 
-   RowBox[{
-    RowBox[{"popdesign", " ", "=", " ", 
-     RowBox[{"{", 
-      RowBox[{"{", 
+   RowBox[{"For", "[", 
+    RowBox[{
+     RowBox[{"j", " ", "=", "1"}], ",", " ", 
+     RowBox[{"j", " ", "\[LessEqual]", " ", "10"}], ",", " ", 
+     RowBox[{"j", "++"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"magicsnp", " ", "=", " ", 
+       RowBox[{"Import", "[", 
+        RowBox[{
+         RowBox[{"\"\<SimData_Rsq50pct_chrom\>\"", " ", "<>", " ", 
+          RowBox[{"ToString", "[", "j", "]"}], " ", "<>", " ", 
+          "\"\<_RABBIT_input.csv\>\""}], ",", "\"\<CSV\>\""}], "]"}]}], ";", 
+      " ", "\[IndentingNewLine]", 
+      RowBox[{"popdesign", " ", "=", " ", 
+       RowBox[{"{", 
+        RowBox[{"{", 
+         RowBox[{
+         "0.156656", ",", "0.000930313", ",", "0.582508", ",", "2.61506", ",",
+           "0.582507", ",", "2.61505"}], "}"}], "}"}]}], ";", " ", 
+      RowBox[{"(*", 
        RowBox[{
-       "0.156656", ",", "0.000930313", ",", "0.582508", ",", "2.61506", ",", 
-        "0.582507", ",", "2.61505"}], "}"}], "}"}]}], ";"}], " ", 
-   RowBox[{"(*", 
-    RowBox[{
-     RowBox[{"popdesign", " ", "=", " ", 
-      RowBox[{
-      "prior", " ", "calculated", " ", "based", " ", "on", " ", "specific", 
-       " ", "population", " ", "pedigree", " ", 
-       RowBox[{"see", ":", " ", 
-        RowBox[{"Zheng", " ", "et", " ", 
-         RowBox[{"al", ".", " ", "2015"}]}]}]}]}], ",", " ", 
-     RowBox[{
-     "can", " ", "input", " ", "priors", " ", "or", " ", "designate", " ", 
-      "pedigree", " ", "here"}]}], "*)"}], "\[IndentingNewLine]", 
-   RowBox[{"magicReconstruct", "[", 
-    RowBox[{"magicsnp", ",", "model", ",", "popdesign", ",", " ", 
-     RowBox[{"reconstructAlgorithm", "\[Rule]", "estfun"}], ",", 
-     RowBox[{
-     "outputFileID", "\[Rule]", 
-      "\"\<SimData_Rsq50pct_chrom1_RABBIT_jointModel_OVD_output\>\""}], ",", 
-     RowBox[{"isPrintTimeElapsed", "\[Rule]", "True"}]}], "]"}], " ", 
-   RowBox[{"(*", 
-    RowBox[{
-    "Define", " ", "parameters", " ", "for", " ", "magicReconstruct"}], 
-    "*)"}], "\[IndentingNewLine]", 
-   RowBox[{
-    RowBox[{
-    "resultFile", "=", 
-     "\"\<SimData_Rsq50pct_chrom1_RABBIT_jointModel_OVD_output_\
-magicReconstruct.txt\>\""}], ";"}], " ", 
-   RowBox[{"(*", 
-    RowBox[{
-    "define", " ", "resulting", " ", "file", " ", "for", " ", "summary"}], 
-    "*)"}], "\[IndentingNewLine]", 
-   RowBox[{
-    RowBox[{"summaryFile", "=", 
-     RowBox[{
-      RowBox[{"StringDrop", "[", 
-       RowBox[{"resultFile", ",", 
-        RowBox[{"-", "4"}]}], "]"}], "<>", "\"\<_Summary.csv\>\""}]}], ";", 
-    " ", 
-    RowBox[{"saveAsSummaryMR", "[", 
-     RowBox[{"resultFile", ",", "summaryFile"}], "]"}], ";"}], " ", 
-   RowBox[{"(*", 
-    RowBox[{"output", " ", "summary"}], "*)"}], 
-   "\[IndentingNewLine]"}]}]], "Input",
+        RowBox[{"popdesign", " ", "=", " ", 
+         RowBox[{
+         "prior", " ", "calculated", " ", "based", " ", "on", " ", "specific",
+           " ", "population", " ", "pedigree", " ", 
+          RowBox[{"see", ":", " ", 
+           RowBox[{"Zheng", " ", "et", " ", 
+            RowBox[{"al", ".", " ", "2015"}]}]}]}]}], ",", " ", 
+        RowBox[{
+        "can", " ", "input", " ", "priors", " ", "or", " ", "designate", " ", 
+         "pedigree", " ", "here"}]}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"magicReconstruct", "[", 
+       RowBox[{"magicsnp", ",", "model", ",", "popdesign", ",", " ", 
+        RowBox[{"reconstructAlgorithm", "\[Rule]", "estfun"}], ",", 
+        RowBox[{"outputFileID", "\[Rule]", 
+         RowBox[{"\"\<SimData_Rsq50pct_chrom\>\"", " ", "<>", " ", 
+          RowBox[{"ToString", "[", "j", "]"}], " ", "<>", " ", 
+          "\"\<_RABBIT_jointModel_OVD_output\>\""}]}], ",", 
+        RowBox[{"isPrintTimeElapsed", "\[Rule]", "True"}]}], "]"}], " ", ";", 
+      
+      RowBox[{"(*", 
+       RowBox[{
+       "Define", " ", "parameters", " ", "for", " ", "magicReconstruct"}], 
+       "*)"}], "\[IndentingNewLine]", " ", 
+      RowBox[{"saveAsSummaryMR", "[", 
+       RowBox[{
+        RowBox[{"\"\<SimData_Rsq50pct_chrom\>\"", " ", "<>", " ", 
+         RowBox[{"ToString", "[", "j", "]"}], " ", "<>", 
+         "\"\<_RABBIT_jointModel_OVD_output_magicReconstruct.txt\>\""}], ",", 
+        
+        RowBox[{"\"\<SimData_Rsq50pct_chrom\>\"", " ", "<>", " ", 
+         RowBox[{"ToString", "[", "j", "]"}], " ", "<>", 
+         "\"\<_RABBIT_jointModel_OVD_output_magicReconstruct_Summary.csv\>\""}\
+]}], "]"}]}]}], 
+    RowBox[{"(*", 
+     RowBox[{"output", " ", "summary"}], "*)"}], "\[IndentingNewLine]", 
+    "]"}]}]}]], "Input",
  CellChangeTimes->{{3.733128170679484*^9, 3.733128189498996*^9}, {
    3.7331295708328257`*^9, 3.7331295891995077`*^9}, {3.733129728276643*^9, 
    3.7331297577269583`*^9}, {3.733129851206983*^9, 3.7331298564359093`*^9}, {
@@ -145,11 +146,16 @@ magicReconstruct.txt\>\""}], ";"}], " ",
    3.79060168383934*^9}, {3.792276648484619*^9, 3.7922766501321774`*^9}, 
    3.792276690893585*^9, {3.797599826531719*^9, 3.797599989195648*^9}, {
    3.79760009492383*^9, 3.797600095158766*^9}, {3.797600599856256*^9, 
-   3.797600723128119*^9}},ExpressionUUID->"b0bad5b8-7190-4262-86d2-\
+   3.797600723128119*^9}, 3.7976307228923073`*^9, {3.7976310817515373`*^9, 
+   3.7976311084746943`*^9}, {3.797631147244216*^9, 3.7976312470632973`*^9}, {
+   3.797631287796517*^9, 3.797631325851644*^9}, 3.79763202534402*^9, {
+   3.797632057237904*^9, 3.797632094967166*^9}, {3.797632141871846*^9, 
+   3.7976321629067574`*^9}, {3.797632555070087*^9, 
+   3.797632556291923*^9}},ExpressionUUID->"b0bad5b8-7190-4262-86d2-\
 029e395fd67e"]
 },
 WindowSize->{808, 911},
-WindowMargins->{{Automatic, 301}, {Automatic, 0}},
+WindowMargins->{{184, Automatic}, {Automatic, 0}},
 FrontEndVersion->"11.3 for Mac OS X x86 (32-bit, 64-bit Kernel) (March 5, \
 2018)",
 StyleDefinitions->"Default.nb"
@@ -165,7 +171,7 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[558, 20, 5808, 128, 472, "Input",ExpressionUUID->"b0bad5b8-7190-4262-86d2-029e395fd67e"]
+Cell[558, 20, 6549, 134, 535, "Input",ExpressionUUID->"b0bad5b8-7190-4262-86d2-029e395fd67e"]
 }
 ]
 *)

@@ -20,7 +20,7 @@ We have provided parent test data with 10,000 markers (test_founder_data_key.txt
 This script is specific for the test population described in the manuscript. It takes user supplied genetic map data and pedigree information and generates data for 1000 random individuals from the last generation in the pedigree. It follows the tutorial for SAEGUS available on github. **It needs to be customized based on user's population.**
 
 * **Required Input Files**
-  * Founder Key Data (example: founder_key.txt): Tab-delimited text documented formatted with the following headers in this order: **snpID, chr, POS, cM, F_MISS, founder1, founder2, founder3, ... , foundern**
+  * Founder Key Data (example: founder_key.txt): Tab-delimited text document formatted with the following headers in this order: **snpID, chr, POS, cM, F_MISS, founder1, founder2, founder3, ... , foundern**
    * Header Descriptions
      * **snpID**: numerical assignment to each marker (ordered by chr and POS) can skip numbers, but should be consecutive numbers based on chr and POS
      * **chr**: numeric assignment to the chromosome for each marker

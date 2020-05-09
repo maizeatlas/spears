@@ -93,7 +93,7 @@ Produces Figure S5 from Manuscript.
 
 * **Required Input Files**
   * Output from 7_Calculate_OVD_AAA_GAA_SER_CCC.R
-    * CO_counts_known_OVD.csv: dataframe that contains the corresponding crossover counts for each sample calculate from simulated (known) and RABBIT (OVD) data. 
+    * CO_counts_known_vs_OVD.csv: dataframe that contains the corresponding crossover counts for each sample calculate from simulated (known) and RABBIT (OVD) data. 
 
 9. **9_RABBIT_run_jointModel_OPD.nb**
 

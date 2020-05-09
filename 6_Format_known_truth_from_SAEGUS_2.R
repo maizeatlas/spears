@@ -1,4 +1,4 @@
-## Create known Ancestral Assignment data from SAEGUS output for use in Ancestral Assignment Accuracy
+## Create known Ancestral Assignment data from SAEGUS output for use in calculating Ancestral Assignment Accuracy
 
 # Required Packages
 library("tidyr")
@@ -10,9 +10,9 @@ library("dplyr")
 # Working directory
 wd <- "~/working/directory"
 # Name of simulated data
-sd <- "simuPOP_n1000.csv"
+sd <- "simdata_n1000_test_set.csv"
 # Name of founder key data
-fd <- "founder_key.csv"
+fd <- "test_founder_data_key.txt"
 # Number of samples
 sn <- 1000
 
@@ -24,7 +24,7 @@ sim <- read.csv(sd,head=T, stringsAsFactors = FALSE) #read in simulated data
 sim <- as.data.frame(t(sim[,3:ncol(sim)])) #Transpose so markers are rows and samples are columns
 
 # Founder Data
-key <- read.table(fd, head=T, stringsAsFactors = FALSE, sep=",")
+key <- read.table(fd, head=T, stringsAsFactors = FALSE, sep="\t")
 key <- rename.vars(key,"chr","CHROM") #rename chromosome column
 founders <- names(key[,6:ncol(key)]) #extract founder names for later
 

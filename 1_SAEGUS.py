@@ -38,7 +38,7 @@ loci_counts = col.Counter(chromosome_column)
 chromosome_lengths = [loci_counts[i] for i in range(1, 11)]
 print(chromosome_lengths) #check marker number for each chromosome
 
-### Create simuPop population from TROPICS data and save (this is for 7 founders)
+### Create simuPop population from Population data and save (this is for 7 founders)
 example_pop = sim.Population(size=7, ploidy=2, loci=chromosome_lengths)
 
 #Assign genotype as arbitrary number representing founder (for tracking) (0:n-1, n=number of founders)
@@ -58,7 +58,6 @@ sim.tagID(example_pop)
 #example_pop.save('example_pop.pop')
 
 ### Create list of crossover probabilities from genetic map measured in centimorgans
-### This is a collection of raw data parsers specific to a file with the following headers: locus, chr, agpv2, cM, namZmPRDA, namZmPRDS (although locus, agpv2, namZmPRDA, and namZmPRDS are dropped)
 tf = parse.RecomRates()
 recom_map = tf.parse_recombination_rates('test_founder_data_key.txt')
 

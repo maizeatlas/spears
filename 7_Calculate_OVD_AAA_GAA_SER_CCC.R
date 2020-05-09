@@ -12,9 +12,9 @@ library("gdata")
 # Working directory
 wd <- "~/working/directory"
 # Name of founder key data
-fd <- "founder_key.txt"
+fd <- "test_founder_data_key.txt"
 # Known Data (output from script 7)
-kd <- "known_AAA_gbsonly.csv"
+kd <- "known_AAA_simdata.csv"
 # Number of chromosomes
 chrom <- 10
 # Number of samples
@@ -228,7 +228,8 @@ write.csv(AAG_bymarker,"AAG_by_marker_OVD.csv",row.names = F)
 
 ###Switch Accuracy (Lin et al. 2002): (n-1-sw)/(n-1); n=#het sites, sw=# switches to get correct phase
 ###Switch error rate (Stevens and Donnely, 2003): 1-switch accuracy
-###SER is based on heterozygous sites, so subset heterozygous sites that are accurate (AAG == 1)  and mark switch sites (those where phase switches
+###SER is based on heterozygous sites, so does not perform well for inbred/homozygous samples
+###Subset heterozygous sites that are accurate (AAG == 1)  and mark switch sites (those where phase switches
 list_df <- list()
 for (i in 1:chrom){
   list_df[[i]] <- subset(AAG[[i]],AAG[[i]]$GT_match==1)
@@ -238,7 +239,7 @@ for (i in 1:chrom){
                                 0,1)
 }
 
-#This will calculates runs of markers that have the same switch set as the markers that precede it, so switches are only counted if it switches related to preceding het sites
+#This will calculate runs of markers that have the same switch set as the markers that precede it, so switches are only counted if it switches related to preceding het sites
 #calculated for each chromosome (j) in each sample (i)
 samples <- as.data.frame(as.character(unique(datalist3[[1]]$sample)),stringsAsFactors = FALSE)
 allrunsum = list()
@@ -276,6 +277,7 @@ write.csv(SER,"SER_OVD_bysample.csv",row.names = F)
 chrom_CO <- list()
 for (i in 1:chrom) {
   CO <- datalist3[[i]]
+  CO <- as.data.table(CO)
   CO <- melt(CO, id.vars = c("snpID","CHROM","sample"), measure.vars = c("OVD_founder1","OVD_founder2"))
   CO <- CO[order(CO$sample,as.numeric(CO$snpID)),]
   CO <- rename.vars(CO, c("variable","value"),c("homolog","founder"))
@@ -323,6 +325,7 @@ sd(OVD_CO_sums$OVD_CO)
 chrom_CO <- list()
 for (i in 1:chrom) {
   CO <- datalist3[[i]]
+  CO <- as.data.table(CO)
   CO <- melt(CO, id.vars = c("snpID","CHROM","sample"), measure.vars = c("sim_founder1","sim_founder2"))
   CO <- CO[order(CO$sample,as.numeric(CO$snpID)),]
   CO <- rename.vars(CO, c("variable","value"),c("homolog","founder"))
@@ -365,7 +368,7 @@ all_CO <- merge(known_CO_sums,OVD_CO_sums, sort=F)
 
 # Pearson's correlation coefficient
 cor(all_CO$known_CO,all_CO$OVD_CO)
-write.csv(all_CO, "CO_counts_known_OVD.csv",row.names = F)
+write.csv(all_CO, "CO_counts_known_vs_OVD.csv",row.names = F)
 
 
 

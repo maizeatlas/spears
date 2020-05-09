@@ -8,9 +8,9 @@ library("ggpubr") ## used for stat_cor
 # User inputs
 
 # Working directory
-wd <- "~/Dropbox/Maize_ATLAS_share/ParallelSelection/GBS/Manuscripts/RABBIT_Bio_App/Data/"
-# Name of crossover count data
-co <- "CO_counts_known_OVD_03MAR20.csv"
+wd <- "/working/directory/"
+# Name of crossover count data from script 7_Calculate_OVD_AAA_GAA_SER_CCC.R
+co <- "CO_counts_known_vs_OVD.csv"
 
 # Set working directory
 setwd(wd)
@@ -20,16 +20,17 @@ all_CO <- read.csv(co, head=T)
 
 # Plot
 
-tiff("../For_submission/Figure_S5.tiff", width=6 , height=6, units="in", compression="none", res=600)
+tiff("./CO_plot.tiff", width=6 , height=6, units="in", compression="none", res=600)
 
+### Will need to customize axes limits and breaks, currently commented out
 p <- ggplot(all_CO, aes(x=known_CO, y=OVD_CO)) +
   geom_point() +
   stat_cor(method = "pearson") +
-  scale_x_continuous(limits=c(175,325), breaks=c(200,250,round(mean(all_CO$known_CO),0),300)) +
-  scale_y_continuous(limits=c(175,325), breaks=c(200,round(mean(all_CO$OVD_CO),0),250,300)) +
+  #scale_x_continuous(limits=c(175,325), breaks=c(200,250,round(mean(all_CO$known_CO),0),300)) +
+  #scale_y_continuous(limits=c(175,325), breaks=c(200,round(mean(all_CO$OVD_CO),0),250,300)) +
   geom_hline(yintercept = round(mean(all_CO$OVD_CO),0), color="grey", size=0.75) +
   geom_vline(xintercept = round(mean(all_CO$known_CO),0), color="grey", size=0.75) +
-  xlab("Expected (simulation)") + ylab("Observed (RABBIT)") + 
+  xlab("Expected (Simulation)") + ylab("Observed (RABBIT)") + 
   theme(plot.background = element_blank()
         ,legend.direction="vertical"
         ,legend.key.size = unit(0.4, "cm")

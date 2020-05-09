@@ -10,9 +10,9 @@ library("data.table")
 # Working directory
 wd <- "~/working/directory/"
 # Name of simulated data
-sd <- "simdata_n1000.csv"
+sd <- "simdata_n1000_test_set.csv"
 # Name of founder key data
-fd <- "founder_key.txt"
+fd <- "test_founder_data_key.txt"
 # Number of chromosomes
 chrom <- 10
 # Name of Population (for MACH output)
@@ -30,17 +30,18 @@ sim <- as.data.frame(t(sim[,3:ncol(sim)])) #Transposes data so markers are rows 
 # Founder Data
 key <- read.table(fd, head=T, stringsAsFactors = FALSE,sep='\t') #Founder data key for GT info and marker info
 key <- rename.vars(key,"chr","CHROM") #Rename because SAEGUS uses "chr" as the variable name
+
 # Subset CHROM, POS, snpID, and GT for MACH founder.chrom.haplos files later on
 founders <- key[,c(1:3,6:ncol(key))] #Subset "snpID", "CHROM", "POS", and parent columns
 founders2 <- names(key[,6:ncol(key)]) #Extract founder ids
 
 #Separate the genotypes into two columns for each founder
-#These are assumed to be completely homozygous
+#These need to be completely homozygous
 for (i in founders2) {
   key <- separate(key,i,c(paste(i,".1",sep=""),paste(i,".2",sep="")),sep="/")
 }
 key <- key[,c(1:5,seq(6,ncol(key),2))] #Only subset the first allele for each GT in each founder
-key <- key[order(key$snpID),] #Make sure markers are in numerical order by snpID
+key <- key[order(as.numeric(key$snpID)),] #Make sure markers are in numerical order by snpID
 
 
 # Split simdata for formatting into separate alleles
@@ -97,7 +98,7 @@ for (i in seq(1,chrom)){
 
 # Create founder_map, which lists chrom and pos of founder data, population.dat, which lists the overlapping markers between founders and population
 founders_map <- founders[,1:3]
-founders_map <- founders_map[order(founders_map$snpID),]
+founders_map <- founders_map[order(as.numeric(founders_map$snpID)),]
 
 # Subset all_data to keep snpID, Chrom, Pos, and samples
 all_data2 <- all_data[,-c(4:5,ncol(all_data))] #Removes cM, F_MISS, and F_MISS_r
@@ -114,7 +115,7 @@ for(i in seq(1,chrom)){
 }
 
 # Create .PED file (genotype data on specific chromosome for population)
-all_data2 <- all_data2[with(all_data2,order(snpID)),] #Make sure order of markers is maintained
+all_data2 <- all_data2[with(all_data2,order(as.numeric(snpID))),] #Make sure order of markers is maintained
 for (i in seq(1,chrom)){
   population.ped <- as.data.frame(t(all_data2[all_data2$CHROM == i,][,-c(1:3)]))
   population.ped <- data.frame(fID=popID, iID=rownames(population.ped), pID=0, mID=0, sex=0, population.ped) #Required IDs for MACH
@@ -141,7 +142,7 @@ for(i in seq(1,chrom)){
   founders.chrom.haps <- data.frame("fID" = rownames(founders.chrom.haps),founders.chrom.haps, row.names = NULL)
   founders.chrom.haps <- cbind.data.frame('index' = rownames(founders.chrom.haps),
                                           "fID" =gsub('\\.1',"", founders.chrom.haps$fID),"HapID" = c("HAP1","HAP2"),
-                                          founders.chrom.haps[2:ncol(founders.chrom.haps)])
+                                          founders.chrom.haps[2:ncol(founders.chrom.haps)]) #creates and formats dataframe
   
   # Removing the second allele from first haplotype and first allele from second haplotype
   founders.chrom.haps <- rbind.data.frame(lapply(founders.chrom.haps[c(TRUE,FALSE),], gsub, pattern='/[A-Z]', replacement=''),

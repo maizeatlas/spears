@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      7774,        178]
-NotebookOptionsPosition[      7466,        164]
-NotebookOutlinePosition[      7820,        180]
-CellTagsIndexPosition[      7777,        177]
+NotebookDataLength[      8424,        190]
+NotebookOptionsPosition[      8131,        177]
+NotebookOutlinePosition[      8470,        192]
+CellTagsIndexPosition[      8427,        189]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -33,7 +33,7 @@ Cell[BoxData[
    "\n", 
    StyleBox[
     RowBox[{"Needs", "[", "\"\<MagicReconstruct`\>\"", "]"}], "Input"], 
-   "\[IndentingNewLine]", 
+   StyleBox["\[IndentingNewLine]", "Input"], 
    RowBox[{"(*", 
     RowBox[{
      RowBox[{
@@ -43,13 +43,12 @@ Cell[BoxData[
      RowBox[{
      "needs", " ", "to", " ", "have", " ", "input", " ", "file", " ", "from", 
       " ", "4", "_MACH", "_to", "_RABBIT", 
-      RowBox[{"_format", ".", "R"}]}]}], "*)"}], 
-   StyleBox["\[IndentingNewLine]", "Input"], 
+      RowBox[{"_format", ".", "R"}]}]}], "*)"}], "\[IndentingNewLine]", 
    StyleBox[
     RowBox[{"SetDirectory", "[", 
      RowBox[{"NotebookDirectory", "[", "]"}], "]"}], "Input"], 
-   StyleBox[" ", "Input"], 
-   StyleBox["\[IndentingNewLine]", "Input"], "\[IndentingNewLine]", 
+   StyleBox[" ", "Input"], "\[IndentingNewLine]", 
+   StyleBox["\[IndentingNewLine]", "Input"], 
    RowBox[{
     RowBox[{"model", " ", "=", " ", "\"\<jointModel\>\""}], ";"}], " ", 
    RowBox[{"(*", 
@@ -62,10 +61,20 @@ Cell[BoxData[
    " ", 
    RowBox[{"(*", 
     RowBox[{
-     RowBox[{"desigante", " ", "algorithm"}], ",", " ", 
+     RowBox[{"designate", " ", "algorithm"}], ",", " ", 
      RowBox[{"can", " ", "be", " ", "origViterbiDecoding"}], ",", " ", 
      "origPosteriorDecoding", ",", " ", 
      RowBox[{"or", " ", "origPathSampling"}]}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+     RowBox[{
+     "run", " ", "magicReconstruct", " ", "for", " ", "each", " ", 
+      "chromosome"}], ",", " ", 
+     RowBox[{
+     "write", " ", "raw", " ", "output", " ", "and", " ", "creates", " ", 
+      "summary", " ", "file", " ", "that", " ", "will", " ", "be", " ", 
+      "used", " ", "in", " ", "SPEARS", " ", "pipeline"}]}], "*)"}], 
+   "\[IndentingNewLine]", 
    RowBox[{"For", "[", 
     RowBox[{
      RowBox[{"j", " ", "=", "1"}], ",", " ", 
@@ -103,7 +112,11 @@ Cell[BoxData[
             RowBox[{"al", ".", " ", "2015"}]}]}]}]}], ",", " ", 
         RowBox[{
         "can", " ", "input", " ", "priors", " ", "or", " ", "designate", " ", 
-         "pedigree", " ", "here"}]}], "*)"}], "\[IndentingNewLine]", 
+         "pedigree", " ", "here"}], ",", "\[IndentingNewLine]", 
+        RowBox[{
+        "the", " ", "priors", " ", "designated", " ", "above", " ", "are", 
+         " ", "for", " ", "the", " ", "sample", " ", "population", " ", 
+         "provided"}]}], "*)"}], "\[IndentingNewLine]", 
       RowBox[{"magicReconstruct", "[", 
        RowBox[{"magicsnp", ",", "model", ",", "popdesign", ",", " ", 
         RowBox[{"reconstructAlgorithm", "\[Rule]", "estfun"}], ",", 
@@ -158,14 +171,13 @@ Cell[BoxData[
    3.797631287796517*^9, 3.797631325851644*^9}, 3.79763202534402*^9, {
    3.797632057237904*^9, 3.797632094967166*^9}, {3.797632141871846*^9, 
    3.7976321629067574`*^9}, {3.797632555070087*^9, 3.797632556291923*^9}, {
-   3.79763277945394*^9, 
-   3.797632807085837*^9}},ExpressionUUID->"b0bad5b8-7190-4262-86d2-\
+   3.79763277945394*^9, 3.797632807085837*^9}, {3.799189794934222*^9, 
+   3.799189911308527*^9}},ExpressionUUID->"b0bad5b8-7190-4262-86d2-\
 029e395fd67e"]
 },
 WindowSize->{808, 911},
-WindowMargins->{{184, Automatic}, {Automatic, 0}},
-FrontEndVersion->"11.3 for Mac OS X x86 (32-bit, 64-bit Kernel) (March 5, \
-2018)",
+WindowMargins->{{715, Automatic}, {130, Automatic}},
+FrontEndVersion->"12.0 for Mac OS X x86 (64-bit) (April 8, 2019)",
 StyleDefinitions->"Default.nb"
 ]
 (* End of Notebook Content *)
@@ -179,7 +191,7 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[558, 20, 6904, 142, 535, "Input",ExpressionUUID->"b0bad5b8-7190-4262-86d2-029e395fd67e"]
+Cell[558, 20, 7569, 155, 598, "Input",ExpressionUUID->"b0bad5b8-7190-4262-86d2-029e395fd67e"]
 }
 ]
 *)

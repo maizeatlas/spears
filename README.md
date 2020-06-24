@@ -13,7 +13,7 @@ We developed SPEARS to allow for start-to-finish analysis of a given population 
 
 ## Description and user requirements for each script
 
-We have provided parent test data with 10,000 markers (test_founder_data_key.txt) that can be used for running through the pipeline. We have also included a parent data set with 47,078 markers (founder_key.txt), although this takes longer to run. These scripts need to be run in order.
+We have provided parent test data with 10,000 markers (test_founder_data_key.txt) that can be used for running through the pipeline quickly. We have also included a parent data set with 47,078 markers (used for manuscript, founder_key.txt), although this takes longer to run. These scripts need to be run in order.
 
 1. **1_SAEGUS_multiparent.py**
 

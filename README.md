@@ -38,7 +38,7 @@ Takes output from 1_SAEGUS.py (formatted as described above) and reformats for u
 
 * **Required Input Files**
   * Simulated GT output (from 1_SAEGUS_multiparent.py) (example: simdata_n1000_test_set_GTform_vcf.csv)
-    * Formatted with headers: **ind_id, markers as: 1_1 (snpID 1, allele 1), 1_2 (snpID 1, allele 2) ... n_1, n_2 (for n number of markers)**. Column names for each marker/allele can be formatted as any character name as long as each marker is in order based on chromosome and position and each allele for each marker are next to each other (example: marker1_a1, marker1_a2, marker2_a1, marker2_a2 would also be appropriate headers).
+    * Formatted with headers: **ind_id, markers as: 1_1 (snpID 1, allele 1), 1_2 (snpID 2, allele 2) ... n_1, n_2 (for n number of markers)**. Column names for each marker/allele can be formatted as any character name as long as each marker is in order based on chromosome and position and each allele for each marker are next to each other (example: marker1_a1, marker1_a2, marker2_a1, marker2_a2 would also be appropriate headers).
   * Founder Key Data (example: founder_key.txt): see description in 1_SAEGUS.py.
 
 3. **3_MACH_sample_run_script.sh**

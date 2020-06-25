@@ -122,13 +122,6 @@ mlgeno2 <- mlgeno
 #Subset founder columns
 mlgeno <- as.data.frame(t(mlgeno[,8:ncol(mlgeno)])) #transpose founder data to match pop data
 
-#Formats genotypes to 11,12,22 (1 is the first allele in first founder and 2 is the alternate allele)
-#for (a in 1:ncol(mlgeno)) {
-# mlgeno[,a] <- gsub(as.character(key3[,7][a]), "1", mlgeno[,a])
-#  mlgeno[,a] <- sub("/", "", mlgeno[,a])
-#  mlgeno[,a] <- gsub("[A-Z]","2", mlgeno[,a])
-#}
-
 #Formats 11,12,22 to 1,2,N which is needed by RABBIT for founders
 mlgeno <- apply(mlgeno, 2, function(x) sub("0/0", "1", x))
 mlgeno <- apply(mlgeno, 2, function(x) sub("1/1", "2", x))

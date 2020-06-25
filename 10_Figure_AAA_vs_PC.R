@@ -35,24 +35,6 @@ for_plot <- merge(for_plot,key[,1:3],sort = F)
 for_plot_all <- melt(as.data.table(for_plot), id.vars = c("snpID","CHROM","POS"), measure.vars = c("mean_AAA","ml_diff"))
 #Centromere and chromosome information for rug plots
 agpv4Ideogram <- read.table("chrom_coord.csv",head=T,sep=",",stringsAsFactors = F)
-# agpv4Ideogram <- cbind.data.frame(CHROM=(1:10),
-#                                   Start=rep(1,10), 
-#                                   End=c(307041717, 244442276, 
-#                                         235667834, 246994605, 
-#                                         223902240, 174033170, 
-#                                         182381542, 181122637, 
-#                                         159769782, 150982314),
-#                                   centromer_start=c(136.77e6,95.51e6, 
-#                                                     85.78e6,109.07e6, 
-#                                                     104.54e6,52.3e6,
-#                                                     56.38e6,53.75e6,
-#                                                     57.36e6,51.39e6),
-#                                   centromer_stop=c(137.12e6,97.49e6,
-#                                                    86.39e6,110.5e6,
-#                                                    106.82e6,53.11e6,
-#                                                    56.68e6,55.39e6,
-#                                                    57.76e6,52.78e6))
-
 
 tiff("./AAA_vs_PC.tiff", width=8 , height=10, units="in", compression="none", res=600)
 ggplot(for_plot_all) +
@@ -69,8 +51,8 @@ ggplot(for_plot_all) +
              pch=21, size=5, stroke=1, fill="grey60", colour="black") +
   facet_grid(CHROM ~ ., switch="y") +
   xlab("Position") + ylab("Chromosome") +
-  scale_x_continuous(breaks=c(0,5e7,1e8,1.5e8,2e8,2.5e8,3e8),
-                     labels=c("0 Mb", "50 Mb", "100 Mb", "150 Mb", "200 Mb", "250 Mb", "300 Mb")) +
+  #scale_x_continuous(breaks=c(0,5e7,1e8,1.5e8,2e8,2.5e8,3e8),
+  #                   labels=c("0 Mb", "50 Mb", "100 Mb", "150 Mb", "200 Mb", "250 Mb", "300 Mb")) +
   theme(plot.background = element_blank()
         #,legend.position="none"
         #,legend.direction="vertical"

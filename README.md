@@ -108,3 +108,27 @@ Takes output from 9_RABBIT_run_jointModel_OPD.nb and calculates the average foun
 * **Required Input Files**
   * Output from 9_RABBIT_run_jointModel_OPD.nb
     * SimData_Rsq##pct_chromn_RABBIT_jointModel_OPD_output_magicReconstruct_Summary.csv
+
+10. **10_Figure_AAA_vs_PC.R**
+
+Creates a figure that shows AAA and Parent Certainty for each chromosome. See Figure S6. 
+
+* **Required Input Files**
+  * user_input.txt
+  * Founder Key Data
+  * File containing centromere and chromosome size information (see example: chrom_coord.csv)
+  * Output from 9_founder_certainty_analysis (ml_diff_by_marker.csv)
+  * Output from 6_Calculate_OVD_AAA_GAA_SER_CCC.R (SPEARS_by_marker_Metrics.csv)
+  
+11. **11_Plot_RABBIT_Haplotype_Map.R**
+
+Creates a haplotype map for a single sample defined by user. See right portion of Figure S5.
+
+* **Required Input Files**
+  * user_input.txt
+  * Founder Key Data
+  * File containing centromere and chromosome size information (see example: chrom_coord.csv)
+  * Output from 5_RABBIT_run_jointModel_OVD.nb
+    * SimData_Rsq##pct_chromn_RABBIT_jointModel_OVD_output_magicReconstruct_Summary.csv: the summary output from RABBIT.
+    
+    

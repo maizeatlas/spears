@@ -34,7 +34,7 @@ This script is specific for the multiparent population described in the manuscri
 
 2. **2_SAEGUS_to_MACH_format.R**
 
-Takes output from 1_SAEGUS.py (formatted as described above) and reformats for use in MaCH. User defines all parameters in this script as follows: wd (working directory), sd (name of GT output from SAEGUS), ld (name of parent-of-origin output from SAEGUS), fd (name of founder data key), chrom (total number of chromosomes), popID (ID assigned to population for MACH input), sn (total number of progeny), rsq (R-square threshold for MACH output), and g_error (global genotyping error). It also outputs known GT data (reformatted from SAEGUS output, known_GT_simdata_vcf.csv, required input for 7_Calculate_OVD_AAA_GAA_SER_CCC.R). Creates a subfolder in the working directory called MaCH and within this subfolder creates a folder for each chromosome. In each chromosome folder, it creates 4 input files that are used by MaCH for imputation: 1) founders_chrom_n.haplos, 2) founders_chrom_n.snps, 3) simdata_chrom_n.dat, 4) simdata_chrom_n.PED.
+Takes output from 1_SAEGUS.py (formatted as described above) and reformats for use in MaCH. User defines all parameters in this script as follows: wd (working directory), sd (name of GT output from SAEGUS), ld (name of parent-of-origin output from SAEGUS), fd (name of founder data key), chrom (total number of chromosomes), popID (ID assigned to population for MACH input), sn (total number of progeny), rsq (R-square threshold for MACH output), and g_error (global genotyping error). These parameter are outputted in a file (user_input.txt) that will be referenced in all downstream scripts. It also outputs known GT data (reformatted from SAEGUS output, known_GT_simdata_vcf.csv, required input for 7_Calculate_OVD_AAA_GAA_SER_CCC.R). Creates a subfolder in the working directory called MaCH and within this subfolder creates a folder for each chromosome. In each chromosome folder, it creates the 4 input files required by MaCH for imputation: 1) founders_chrom_n.haplos, 2) founders_chrom_n.snps, 3) simdata_chrom_n.dat, 4) simdata_chrom_n.PED.
 
 * **Required Input Files**
   * Simulated GT output (from 1_SAEGUS_multiparent.py) (example: simdata_n1000_test_set_GTform_vcf.csv)
@@ -57,6 +57,7 @@ Takes output from 2_SAEGUS_to_MaCH_format.R and performs imputation using MaCH. 
 Takes output from 3_MACH_sample_run_script.sh (specifically, the .mlgeno and .mlinfo files for each chromosome) and formats for use in RABBIT. Filters sites based on user-defined R-square threshold. Creates one input file per chromosome. 
 
 * **Required Input Files**
+  * user_input.txt
   * Output from 3_MACH_sample_run_script.sh required for next step (other files are outputted see MACH for details)
     * step2_chrom_n.mlgeno: genotype data for all samples for each chromosome n.
     * step2_chrom_n.mlinfo: stats (including Rsq) for each marker, used for filtering.
@@ -75,6 +76,7 @@ Runs the Viterbi algorithm "origViterbiDecoding" in RABBIT. This is specific for
 Formats RABBIT (inferred) output and compares to simulated (expected) output for calculating ancestral assignment accuracy (AAA), genotype assignment accuracy (GAA), switch-error rate (SER), and correlation between crossover counts (CCC). Creates an output file for SPEARS metrics by sample (SPEARS_by_sample_Metrics.csv) and by marker (SPEARS_by_marker_Metrics.csv, includes missing and genotyping error distributions) and results from Pearson's correlation on CO counts calculated between expected and inferred data (SPEARS_CO_Pearson_results.csv).  
 
 * **Required Input Files**
+  * user_input.txt
   * Founder Key Data
   * Output from 1_SAEGUS_multiparent.py
     * simdata_n1000_parent_of_origin.csv

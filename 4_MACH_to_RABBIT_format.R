@@ -2,7 +2,7 @@
 # Filters markers that have an Rsq<0.80
 
 #Designate working directory
-wd <- "~/Dropbox/Maize_ATLAS_share/ParallelSelection/GBS/Manuscripts/RABBIT_Bio_App/scripts/test_run/"
+wd <- "~/working/directory/"
 
 # Required Packages
 library("tidyr")

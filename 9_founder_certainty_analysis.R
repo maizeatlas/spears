@@ -9,11 +9,11 @@ library("gdata")
 library("ggplot2")
 
 #Designate working directory
-wd <- "~/Dropbox/Maize_ATLAS_share/ParallelSelection/GBS/Manuscripts/RABBIT_Bio_App/Data/temp/n47K/"
+wd <- "~/working/directory/"
 setwd(wd)
 
 #User inputs (read from file created in 2_SAEGUS_to_MACH_format.R
-user <- read.table("user_input.txt", header = F, sep = "\t")
+user <- read.table("user_input.txt", header = F, sep = "\t", stringsAsFactors = F)
 
 # Name of founder key data
 fd <- user[user[[1]]=="fd",2]
@@ -53,14 +53,18 @@ key <- key[which(key$snpID %in% mlinfo3$SNP),] #subset key based on R-square thr
 setwd(wd)
 
 # Format RABBIT OPD Output
-fn <- length(names(key))-8 # Number of founders
+fn <- length(names(key))-7 # Number of founders
 gtnum <- sum(seq(1,fn,1)) # Number of possible genotype combinations
 test_acc <- list()
 for (c in 1:chrom){
   ## Probabilities from RABBIT for each chromosome
-  haplo_prob <- read.table(paste("./RABBIT/SimData_Rsq",rsq*100,"pct_chrom",c,"_RABBIT_jointModel_OPD_output_magicReconstruct_Summary.csv", sep=""),head=T,
-                           sep=",",skip=(9 + gtnum + sn + fn),nrows = ((gtnum*sn)+2), stringsAsFactors = F)
-  haplo_prob <- haplo_prob[-c(1:2),]
+  mnum <- nrow(subset(key,key$CHROM==c))
+  snps <- read.table(paste("./RABBIT/SimData_Rsq",rsq*100,"pct_chrom",c,"_RABBIT_jointModel_OPD_output_magicReconstruct_Summary.csv", sep=""),head=F,
+                     sep=",",skip=(9 + gtnum + sn + fn),nrows = 1, stringsAsFactors = F)
+  haplo_prob <- read.table(paste("./RABBIT/SimData_Rsq",rsq*100,"pct_chrom",c,"_RABBIT_jointModel_OPD_output_magicReconstruct_Summary.csv", sep=""),head=F,
+                           sep=",",skip=(9 + gtnum + sn + fn + 3),nrows = ((gtnum*sn)), stringsAsFactors = F)
+  names(haplo_prob) <- snps
+  #haplo_prob <- haplo_prob[-c(1:2),]
   haplo_prob <- separate(haplo_prob, SNP, c("Sample", "GT"), sep="_")
   
   ## Founder key from RABBIT output
@@ -69,7 +73,7 @@ for (c in 1:chrom){
   samples <- as.data.frame(as.character(unique(haplo_prob$Sample)),stringsAsFactors = FALSE)
   ## Assign ancester for each sample at each marker based on RABBIT output
   prob_t2 <- list()
-  for (i in samples[,1]) {
+  for (i in samples[1:10,1]) {
       sample1 <- subset(haplo_prob,haplo_prob$Sample==i) #subset sample
       sample1 <- melt(as.data.table(sample1), id.vars = c("Sample","GT")) #format into long format
       sample1 <- rename.vars(sample1, c("variable","value", "Sample"),c("snpID","ML","sample")) #change variable names
@@ -101,15 +105,12 @@ for (c in 1:chrom){
 bymarker <- list()
 for (i in 1:chrom){
   
-  #temp[[i]] <- temp[[i]][,-7]
-  #bymarker[[i]] <- aggregate(test_acc[[i]]$diff,list(test_acc[[i]]$snpID),mean) #take average probabilities across all samples for each marker in each chromosome
-  bymarker[[i]] <- aggregate(test_acc[[i]]$ml1,list(test_acc[[i]]$snpID),mean) #take average probabilities across all samples for each marker in each chromosome
-  #bymarker[[i]] <- aggregate(temp[[i]]$diff,list(temp[[i]]$snpID),mean) #take average probabilities across all samples for each marker in each chromosome
-  #temp[[i]]$max <- max(as.numeric(temp[[i]]$ml1),as.numeric(temp[[i]]$ml2)) 
+  bymarker[[i]] <- aggregate(test_acc[[i]]$diff,list(test_acc[[i]]$snpID),mean) #take average probabilities across all samples for each marker in each chromosome
+  #bymarker[[i]] <- aggregate(test_acc[[i]]$ml1,list(test_acc[[i]]$snpID),mean) #take average probabilities across all samples for each marker in each chromosome
 }
 
 ml_bymarker <- do.call("rbind",bymarker)
-ml_bymarker <- rename.vars(ml_bymarker,c("Group.1","x"),c("snpID","ml_max"))
+ml_bymarker <- rename.vars(ml_bymarker,c("Group.1","x"),c("snpID","ml_diff"))
 setwd(wd)
-write.csv(ml_bymarker,"ml_max_bymarker_16JUN20.csv",row.names = F) #output results
+write.csv(ml_bymarker,"ml_diff_bymarker.csv",row.names = F) #output results
 

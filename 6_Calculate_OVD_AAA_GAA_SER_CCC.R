@@ -11,11 +11,11 @@ library("data.table")
 library("gdata")
 
 #Designate working directory
-wd <- "~/Dropbox/Maize_ATLAS_share/ParallelSelection/GBS/Manuscripts/RABBIT_Bio_App/scripts/test_run/"
+wd <- "~/working/directory/"
 setwd(wd)
 
 #User inputs (read from file created in 2_SAEGUS_to_MACH_format.R
-user <- read.table("user_input.txt", header = F, sep = "\t")
+user <- read.table("user_input.txt", header = F, sep = "\t", stringsAsFactors = F)
 
 # Name of founder key data
 fd <- user[user[[1]]=="fd",2]
@@ -30,7 +30,7 @@ rsq <- as.numeric(user[user[[1]]=="rsq",2])
 #Known parent-of-origin
 ld <- user[user[[1]]=="ld",2]
 #Known GT Data
-kd <- "known_GT_simdata_vcf.csv"
+kd <- user[user[[1]]=="kd",2]
 
 # Founder key, known GT, and known parent-of-origin
 key <- read.table(fd, head=T, stringsAsFactors = FALSE, sep="\t") #founder key
@@ -391,10 +391,12 @@ cor(all_CO$CO_known,all_CO$CO_RABBIT)
 #Table of per-sample metrics (AAA, GAA, SER, CO_known, CO_RABBIT)
 sample_table <- Reduce(merge, list(AAA_bysample,GAA_bysample, SER, known_CO_sums, OVD_CO_sums))
 write.table(sample_table,"SPEARS_by_sample_Metrics.csv",sep=",", row.names = F)
+write.table(cbind("sample","SPEARS_by_sample_Metrics.csv"),"user_input.txt", col.names = F, sep="\t", append = TRUE, row.names = F)
 
 #Table of per-marker metrics (AAA, GAA)
 marker_table <- Reduce(merge, list(AAA_bymarker,GAA_bymarker,err_miss_dist))
 write.table(marker_table,"SPEARS_by_marker_Metrics.csv",sep=",", row.names = F)
+write.table(cbind("marker","SPEARS_by_marker_Metrics.csv"),"user_input.txt", col.names = F, sep="\t", append = TRUE, row.names = F)
 
 #Pearson's Correlation Coefficient Output
 corrFunc <- function(var1, var2, data) {
@@ -404,6 +406,8 @@ corrFunc <- function(var1, var2, data) {
 }
 P_cor <- corrFunc("CO_known","CO_RABBIT",sample_table)
 write.table(P_cor,"SPEARS_CO_Pearson_results.csv",sep=",", row.names = F)
+
+
 
 
 

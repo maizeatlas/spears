@@ -8,13 +8,13 @@ library("data.table")
 
 # User inputs
 # Working directory
-wd <- "~/Dropbox/Maize_ATLAS_share/ParallelSelection/GBS/Manuscripts/RABBIT_Bio_App/scripts/test_run/"
+wd <- "~/working/directory/"
 # Simulated GT matrix
-sd <- "simdata_n100_test_set_GTform_vcf.csv"
+sd <- "simdata_n1000_test_set_GTform_vcf.csv"
 #Simulated Parent_of_origin
-ld <- "simdata_n100_parent_of_origin.csv"
+ld <- "simdata_n1000_parent_of_origin.csv"
 # Name of founder key data
-fd <- "test_founder_key_vcf.txt"
+fd <- "founder_key_vcf.txt"
 # Number of chromosomes
 chrom <- 10
 # Name of Population (for MACH output)
@@ -70,6 +70,8 @@ known <- cbind.data.frame(known[,1:5],R_ERR = err_df[,(sn+1)], known[,6:ncol(kno
 
 #Output known GT data for later
 write.csv(known,"known_GT_simdata_vcf.csv",row.names = F)
+write.table(cbind("kd","known_GT_simdata_vcf.csv"),"user_input.txt", col.names = F, sep="\t", append = TRUE, row.names = F)
+
 
 #Induce missing data 
 sim$F_MISS_r <- (round(sim$F_MISS,(nchar(sn)-1))*sn) #Create an integer for number of genotypes to set to missing (rounded to whole number based on original sample number)

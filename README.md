@@ -13,14 +13,14 @@ We developed SPEARS to allow for start-to-finish analysis of a given population 
 
 ## Description and user requirements for each script
 
-We have provided parent test data with 10,000 markers (test_founder_data_key.txt) that can be used for running through the pipeline quickly. We have also included a parent data set with 47,078 markers (used for manuscript, founder_key.txt), although this takes longer to run. These scripts need to be run in order.
+We have provided parent test data with 10,000 markers (test_founder_key_vcf.txt) that can be used for running through the pipeline quickly. We have also included a parent data set with 47,078 markers (used for manuscript, founder_key_vcf.txt), although this takes longer to run. These scripts need to be run in order.
 
 1. **1_SAEGUS_multiparent.py**
 
-This script is specific for the test multiparent population described in the manuscript. It takes user supplied genetic map data and pedigree information and generates data for 1000 random individuals from the last generation in the pedigree. It follows the tutorial for SAEGUS available on github. Output includes two files: 1) simdata_n1000_test_set_GTform_vcf.csv (this include genotypes for all sampled progeny in the format: "0/0","0/1","1/0","1/1" and is required input for 2_SAEGUS_to_MACH_format.R) and 2) simdata_n1000_parent_of_origin.csv (origin of each allele for each marker in each individual and is required inputfor 7_Calculate_OVD_AAA_GAA_SER_CCC.R). **It needs to be customized based on user's population.**
+This script is specific for the multiparent population described in the manuscript. It takes a user supplied genetic map and pedigree information and generates genotype and parent-of-origin data for 1000 random individuals from the last generation in the pedigree. It follows the tutorial for SAEGUS available on github. Output includes two files: 1) simdata_n1000_test_set_GTform_vcf.csv (this include genotypes for all sampled progeny in the format: "0/0","0/1","1/0","1/1" and is required input for 2_SAEGUS_to_MACH_format.R) and 2) simdata_n1000_parent_of_origin.csv (origin of each allele for each marker in each individual and is required inputfor 7_Calculate_OVD_AAA_GAA_SER_CCC.R). **It needs to be customized based on user's population.**
 
 * **Required Input Files**
-  * Founder Key Data (example: founder_key.txt): Tab-delimited text document formatted with the following headers in this order: **snpID, chr, POS, cM, F_MISS, founder1, founder2, founder3, ... , foundern**
+  * Founder Key Data (example: founder_key_vcf.txt): Tab-delimited text document formatted with the following headers in this order: **snpID, chr, POS, cM, F_MISS, REF, ALT, founder1, founder2, founder3, ... , foundern**
    * Header Descriptions
      * **snpID**: numerical assignment to each marker (ordered by chr and POS) can skip numbers, but should be consecutive numbers based on chr and POS
      * **chr**: numeric assignment to the chromosome for each marker

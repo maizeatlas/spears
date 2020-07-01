@@ -1,6 +1,6 @@
-# Calculate AAA, AAG, SER, and CCO for RABBIT OVD output
+# Calculate AAA, AAG, PAA, and CCO for RABBIT OVD output
 #Need to run lines 1:157 first, all calculations based on datalist3 (formatted output from RABBIT and known truth)
-#Running entire script will output 3 tables to wd: 1) SPEARS metrics by sample (AAA, GAA, SER, CCC),
+#Running entire script will output 3 tables to wd: 1) SPEARS metrics by sample (AAA, GAA, PAA, CCC),
 #2) SPEARS metrics by marker (AAA, GAA) that includes missing and error distributions, 3) output from Pearson's cor.test on CO counts
 #Tables on SPEARS metrics are used for genome plots
 
@@ -242,7 +242,7 @@ mean(GAA_bysample$GAA)
 sd(GAA_bysample$GAA)
 
 #####
-## Calculate SER
+## Calculate PAA
 #####
 
 ###Switch Accuracy (Lin et al. 2002): (n-1-sw)/(n-1); n=#het sites, sw=# switches to get correct phase
@@ -277,14 +277,14 @@ for (j in 1:chrom){
 allrunsum2 <- do.call("cbind",allrunsum)
 
 #Average for each sample
-SER <- as.data.frame(rowMeans(allrunsum2))
+PAA <- as.data.frame(rowMeans(allrunsum2))
 #Add sample names to dataframe
-SER$sample <- row.names(allrunsum2)
-names(SER) <- c("SER","sample")
+PAA$sample <- row.names(allrunsum2)
+names(PAA) <- c("PAA","sample")
 #calculate actual SER from phasing accuracy
-SER$SER <- 1-SER$SER
-mean(SER$SER) #mean SER
-sd(SER$SER) #sd of SER
+#SER$SER <- 1-SER$SER
+mean(PAA$PAA) #mean SER
+sd(PAA$PAA) #sd of SER
 
 #####
 ## Calculate CO counts and CCO for RABBIT output
@@ -388,8 +388,8 @@ cor(all_CO$CO_known,all_CO$CO_RABBIT)
 
 
 ##Output
-#Table of per-sample metrics (AAA, GAA, SER, CO_known, CO_RABBIT)
-sample_table <- Reduce(merge, list(AAA_bysample,GAA_bysample, SER, known_CO_sums, OVD_CO_sums))
+#Table of per-sample metrics (AAA, GAA, PAA, CO_known, CO_RABBIT)
+sample_table <- Reduce(merge, list(AAA_bysample,GAA_bysample, PAA, known_CO_sums, OVD_CO_sums))
 write.table(sample_table,"SPEARS_by_sample_Metrics.csv",sep=",", row.names = F)
 write.table(cbind("sample","SPEARS_by_sample_Metrics.csv"),"user_input.txt", col.names = F, sep="\t", append = TRUE, row.names = F)
 

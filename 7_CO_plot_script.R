@@ -30,7 +30,7 @@ p <- ggplot(all_CO, aes(x=CO_known, y=CO_RABBIT)) +
   scale_y_continuous(limits=c(175,325), breaks=c(200,round(mean(all_CO$CO_RABBIT),0),250,300)) +
   geom_hline(yintercept = round(mean(all_CO$CO_RABBIT),0), color="grey", size=0.75) +
   geom_vline(xintercept = round(mean(all_CO$CO_known),0), color="grey", size=0.75) +
-  xlab("Expected (Simulation)") + ylab("Inferred (RABBIT)") + 
+  xlab("Known (Simulation)") + ylab("Inferred (RABBIT)") + 
   theme(plot.background = element_blank()
         ,legend.direction="vertical"
         ,legend.key.size = unit(0.4, "cm")

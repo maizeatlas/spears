@@ -1,5 +1,5 @@
 # This takes mlinfo and mlgeno output from MACH and formats for use in RABBIT
-# Filters markers that have an Rsq<0.80
+# Filters markers that have an Rsq< user defined threshold
 
 #Designate working directory
 wd <- "~/working/directory/"
@@ -13,7 +13,7 @@ setwd(wd)
 #User inputs (read from file created in 2_SAEGUS_to_MACH_format.R
 user <- read.table("user_input.txt", header = F, sep = "\t")
 
-# Name of founder key data
+# Name of parent key data
 fd <- user[user[[1]]=="fd",2]
 # Number of chromosomes
 chrom <- as.numeric(user[user[[1]]=="chrom",2])
@@ -33,7 +33,7 @@ mlinfo <- list()
 for (i in 1:chrom){
   
   setwd(paste0(wd,'/MACH/chrom',i))
-  mlinfo[[i]]<- read.table(paste0("step2_chrom_",i,".mlinfo",sep=""), header=T, sep="\t")
+  mlinfo[[i]]<- read.table(paste0("imputed_chrom_",i,".mlinfo",sep=""), header=T, sep="\t")
   
 }
 
@@ -49,7 +49,7 @@ mlgeno <- list()
 for (i in 1:chrom){
   
   setwd(paste0(wd,'/MACH/chrom',i))
-  mlgeno[[i]]<- read.table(paste0("step2_chrom_",i,".mlgeno",sep=""), header=F, sep=" ", stringsAsFactors = FALSE)
+  mlgeno[[i]]<- read.table(paste0("imputed_chrom_",i,".mlgeno",sep=""), header=F, sep=" ", stringsAsFactors = FALSE)
   mlgeno[[i]]$V1 <- sub(paste(popID,"->",sep=""), "", mlgeno[[i]]$V1)
   mlgeno[[i]] <- mlgeno[[i]][,-2]
   
@@ -72,14 +72,13 @@ colnames(mlgeno2) <- c("sample", as.character(mlinfo2$SNP))
 orig_mlgeno <- mlgeno2
 
 
-#working directory: the one that contains founder data
+#working directory: the one that contains parent data
 setwd(wd)
 
-#Founder Data
-key <- read.table(fd, head=T, stringsAsFactors = FALSE, sep="\t") #Upload founder data
+#parent Data
+key <- read.table(fd, head=T, stringsAsFactors = FALSE, sep="\t") #Upload parent data
 key <- rename.vars(key,"chr","CHROM") #Rename chromosome column
 key <- key[which(key$snpID %in% mlinfo3$SNP),] #Subset based on markers kept after R-square filter
-#key2 <- separate(key, names(key[6]), c(paste(names(key[6]),".1",sep=""), paste(names(key[6]),".2",sep="")), sep="/") #Separate the GT data for the first founder into separate alleles. The first allele from the first founder will be used as allele "1" for RABBIT formatting
 
 ##Formatting mlgeno data
 names <- as.character(mlgeno2$sample) #make sure sample ids are in character format
@@ -99,14 +98,14 @@ for (a in 4:(sn+3)) {
 #Create RABBIT folder
 dir.create("RABBIT")
 
-#Create header, founder, population data for RABBIT input, append, and write csv files for each chromosome
+#Create header, parent, population data for RABBIT input, append, and write csv files for each chromosome
 for (i in 1:chrom){
     mlgeno <- subset(test,test$CHROM==i) #subset chromosome
     mlgeno <- mlgeno[order(as.numeric(mlgeno$snpID)),] #check marker order
     mlgeno <- as.data.frame(t(mlgeno[,4:(sn+3)])) #transpose data so samples are rows and markers are columns
-    key3 <- subset(key,key$CHROM==i) #subset founder key for each chromosome
+    key3 <- subset(key,key$CHROM==i) #subset parent key for each chromosome
 
-#Formats genotypes to 11,12,22 (1 is the allele present in first founder (ParentA in this case) and 2 is the alternate allele)
+#Formats genotypes to 11,12,22 (1 is the allele present in first parent (ParentA in this case) and 2 is the alternate allele)
 for (a in 1:ncol(mlgeno)) {
   mlgeno[,a] <- gsub(as.character(key3[,6][a]), "1", mlgeno[,a])
   mlgeno[,a] <- gsub("[A-Z]","2", mlgeno[,a])
@@ -114,15 +113,15 @@ for (a in 1:ncol(mlgeno)) {
 look <- mlgeno
 colnames(look) <- subset(test,test$CHROM==i)$snpID #Assign snpIDs
 
-#founders
-mlgeno <- subset(key,key$CHROM==i) #subset original founder key for each chromosome
+#parents
+mlgeno <- subset(key,key$CHROM==i) #subset original parent key for each chromosome
 mlgeno <- mlgeno[order(mlgeno$snpID),] #check marker order
 mlgeno2 <- mlgeno
 
-#Subset founder columns
-mlgeno <- as.data.frame(t(mlgeno[,8:ncol(mlgeno)])) #transpose founder data to match pop data
+#Subset parent columns
+mlgeno <- as.data.frame(t(mlgeno[,8:ncol(mlgeno)])) #transpose parent data to match pop data
 
-#Formats 11,12,22 to 1,2,N which is needed by RABBIT for founders
+#Formats 11,12,22 to 1,2,N which is needed by RABBIT for parents
 mlgeno <- apply(mlgeno, 2, function(x) sub("0/0", "1", x))
 mlgeno <- apply(mlgeno, 2, function(x) sub("1/1", "2", x))
 mlgeno <- apply(mlgeno, 2, function(x) sub("0/1", "N", x))
@@ -139,9 +138,9 @@ colnames(output.2) <- colnames(look)
 
 #Append data and write output 
 output.3 <- as.matrix(rbind(output.2, mlgeno, look))
-write.table(output.3, paste0(wd,"/RABBIT/SimData_Rsq",rsq*100,"pct_chrom",i,"_RABBIT_input.csv",sep=""), sep=",",
+write.table(output.3, paste0(wd,"/RABBIT/filtered_chrom_",i,"_RABBIT_input.csv",sep=""), sep=",",
             row.names=T,
-            col.names=c("#founders", "7", rep("", (ncol(output.3)-2))), quote=F)
+            col.names=c("#parents", "7", rep("", (ncol(output.3)-2))), quote=F)
 }
 
 

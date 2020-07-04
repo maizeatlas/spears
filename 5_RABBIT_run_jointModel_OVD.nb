@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      8424,        190]
-NotebookOptionsPosition[      8131,        177]
-NotebookOutlinePosition[      8470,        192]
-CellTagsIndexPosition[      8427,        189]
+NotebookDataLength[      9738,        216]
+NotebookOptionsPosition[      9352,        202]
+NotebookOutlinePosition[      9691,        217]
+CellTagsIndexPosition[      9648,        214]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -23,27 +23,29 @@ Cell[BoxData[
   RowBox[{"(*", 
    RowBox[{
     RowBox[{
-    "Set", " ", "directory", " ", "where", " ", "RABBIT", " ", "packages", 
-     " ", "are", " ", "downloaded"}], ",", " ", 
+    "User", " ", "needs", " ", "to", " ", "set", " ", "directory", " ", 
+     "where", " ", "RABBIT", " ", "packages", " ", "are", " ", "downloaded"}],
+     ",", " ", 
     RowBox[{"pull", " ", "required", " ", "package"}]}], "*)"}], 
   "\[IndentingNewLine]", 
   RowBox[{
    RowBox[{
-   "SetDirectory", "[", "\"\</Directory/RABBIT/RABBIT_Packages\>\"", "]"}], 
+   "SetDirectory", "[", "\"\</directory/RABBIT/RABBIT_Packages\>\"", "]"}], 
    "\n", 
    StyleBox[
     RowBox[{"Needs", "[", "\"\<MagicReconstruct`\>\"", "]"}], "Input"], 
-   StyleBox["\[IndentingNewLine]", "Input"], 
+   "\[IndentingNewLine]", 
    RowBox[{"(*", 
     RowBox[{
      RowBox[{
-     "Change", " ", "directory", " ", "to", " ", "the", " ", "directory", " ",
-       "where", " ", "this", " ", "notebook", " ", "is", " ", "saved"}], ",", 
-     " ", 
+     "This", " ", "line", " ", "will", " ", "change", " ", "directory", " ", 
+      "to", " ", "the", " ", "directory", " ", "where", " ", "this", " ", 
+      "notebook", " ", "is", " ", "saved"}], ",", " ", 
      RowBox[{
      "needs", " ", "to", " ", "have", " ", "input", " ", "file", " ", "from", 
       " ", "4", "_MACH", "_to", "_RABBIT", 
-      RowBox[{"_format", ".", "R"}]}]}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"_format", ".", "R"}]}]}], "*)"}], 
+   StyleBox["\[IndentingNewLine]", "Input"], 
    StyleBox[
     RowBox[{"SetDirectory", "[", 
      RowBox[{"NotebookDirectory", "[", "]"}], "]"}], "Input"], 
@@ -75,6 +77,13 @@ Cell[BoxData[
       "summary", " ", "file", " ", "that", " ", "will", " ", "be", " ", 
       "used", " ", "in", " ", "SPEARS", " ", "pipeline"}]}], "*)"}], 
    "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+     RowBox[{"change", " ", "j"}], " ", "\[LessEqual]", " ", 
+     RowBox[{
+     "10", " ", "to", " ", "number", " ", "corresponding", " ", "to", " ", 
+      "the", " ", "number", " ", "of", " ", "chromosomes", " ", "to", " ", 
+      "run"}]}], "*)"}], "\[IndentingNewLine]", 
    RowBox[{"For", "[", 
     RowBox[{
      RowBox[{"j", " ", "=", "1"}], ",", " ", 
@@ -84,17 +93,10 @@ Cell[BoxData[
       RowBox[{"magicsnp", " ", "=", " ", 
        RowBox[{"Import", "[", 
         RowBox[{
-         RowBox[{"\"\<SimData_Rsq50pct_chrom\>\"", " ", "<>", " ", 
+         RowBox[{"\"\<filtered_chrom_\>\"", " ", "<>", " ", 
           RowBox[{"ToString", "[", "j", "]"}], " ", "<>", " ", 
           "\"\<_RABBIT_input.csv\>\""}], ",", "\"\<CSV\>\""}], "]"}]}], ";", 
-      " ", 
-      RowBox[{"(*", 
-       RowBox[{
-        RowBox[{"change", " ", "j"}], " ", "\[LessEqual]", " ", 
-        RowBox[{
-        "10", " ", "to", " ", "number", " ", "corresponding", " ", "to", " ", 
-         "the", " ", "number", " ", "of", " ", "chromosomes", " ", "to", " ", 
-         "run"}]}], "*)"}], "\[IndentingNewLine]", 
+      " ", "\[IndentingNewLine]", 
       RowBox[{"popdesign", " ", "=", " ", 
        RowBox[{"{", 
         RowBox[{"{", 
@@ -115,31 +117,42 @@ Cell[BoxData[
          "pedigree", " ", "here"}], ",", "\[IndentingNewLine]", 
         RowBox[{
         "the", " ", "priors", " ", "designated", " ", "above", " ", "are", 
-         " ", "for", " ", "the", " ", "sample", " ", "population", " ", 
+         " ", "for", " ", "the", " ", "example", " ", "population", " ", 
          "provided"}]}], "*)"}], "\[IndentingNewLine]", 
       RowBox[{"magicReconstruct", "[", 
        RowBox[{"magicsnp", ",", "model", ",", "popdesign", ",", " ", 
         RowBox[{"reconstructAlgorithm", "\[Rule]", "estfun"}], ",", 
+        RowBox[{"(*", 
+         RowBox[{
+         "Define", " ", "parameters", " ", "for", " ", "magicReconstruct"}], 
+         "*)"}], "\[IndentingNewLine]", 
+        RowBox[{"offspringAllelicError", " ", "\[Rule]", " ", "0.006"}], ",", 
+        " ", 
+        RowBox[{"(*", 
+         RowBox[{
+          RowBox[{
+          "define", " ", "error", " ", "rate", " ", "in", " ", "progeny"}], 
+          ",", " ", 
+          RowBox[{
+          "match", " ", "what", " ", "was", " ", "used", " ", "for", " ", 
+           "step", " ", "2"}]}], "*)"}], 
         RowBox[{"outputFileID", "\[Rule]", 
-         RowBox[{"\"\<SimData_Rsq50pct_chrom\>\"", " ", "<>", " ", 
+         RowBox[{"\"\<reconstructed_chrom_\>\"", " ", "<>", " ", 
           RowBox[{"ToString", "[", "j", "]"}], " ", "<>", " ", 
-          "\"\<_RABBIT_jointModel_OVD_output\>\""}]}], ",", 
+          "\"\<_jointModel_OVD\>\""}]}], ",", 
         RowBox[{"isPrintTimeElapsed", "\[Rule]", "True"}]}], "]"}], " ", ";", 
-      
+      " ", 
       RowBox[{"(*", 
-       RowBox[{
-       "Define", " ", "parameters", " ", "for", " ", "magicReconstruct"}], 
-       "*)"}], "\[IndentingNewLine]", " ", 
+       RowBox[{"name", " ", "of", " ", "output"}], "*)"}], 
+      "\[IndentingNewLine]", " ", 
       RowBox[{"saveAsSummaryMR", "[", 
        RowBox[{
-        RowBox[{"\"\<SimData_Rsq50pct_chrom\>\"", " ", "<>", " ", 
+        RowBox[{"\"\<reconstructed_chrom_\>\"", " ", "<>", " ", 
          RowBox[{"ToString", "[", "j", "]"}], " ", "<>", 
-         "\"\<_RABBIT_jointModel_OVD_output_magicReconstruct.txt\>\""}], ",", 
-        
-        RowBox[{"\"\<SimData_Rsq50pct_chrom\>\"", " ", "<>", " ", 
+         "\"\<_jointModel_OVD_magicReconstruct.txt\>\""}], ",", 
+        RowBox[{"\"\<reconstructed_chrom_\>\"", " ", "<>", " ", 
          RowBox[{"ToString", "[", "j", "]"}], " ", "<>", 
-         "\"\<_RABBIT_jointModel_OVD_output_magicReconstruct_Summary.csv\>\""}\
-]}], "]"}]}]}], 
+         "\"\<_jointModel_OVD_summary.csv\>\""}]}], "]"}]}]}], 
     RowBox[{"(*", 
      RowBox[{"output", " ", "summary"}], "*)"}], "\[IndentingNewLine]", 
     "]"}]}]}]], "Input",
@@ -172,11 +185,23 @@ Cell[BoxData[
    3.797632057237904*^9, 3.797632094967166*^9}, {3.797632141871846*^9, 
    3.7976321629067574`*^9}, {3.797632555070087*^9, 3.797632556291923*^9}, {
    3.79763277945394*^9, 3.797632807085837*^9}, {3.799189794934222*^9, 
-   3.799189911308527*^9}},ExpressionUUID->"b0bad5b8-7190-4262-86d2-\
-029e395fd67e"]
+   3.799189911308527*^9}, {3.8007969432128363`*^9, 3.800796991481251*^9}, {
+   3.801331373922482*^9, 3.80133142059274*^9}, {3.802885041794592*^9, 
+   3.802885043925221*^9}, {3.802885125376707*^9, 3.80288514764047*^9}, {
+   3.802885349448245*^9, 3.8028854562237883`*^9}, {3.8028855851359863`*^9, 
+   3.802885586084903*^9}, {3.802885773189468*^9, 3.802885778204832*^9}, {
+   3.8028858599944887`*^9, 3.802885891123023*^9}, {3.802885950389407*^9, 
+   3.8028860520118303`*^9}, {3.8028935287525377`*^9, 
+   3.8028935291119623`*^9}, {3.802893669301176*^9, 
+   3.8028936699530163`*^9}},ExpressionUUID->"b0bad5b8-7190-4262-86d2-\
+029e395fd67e"],
+
+Cell[BoxData[" "], "Input",
+ CellChangeTimes->{3.801220039386454*^9},
+ CellLabel->"In[14]:=",ExpressionUUID->"effeafa5-1f5c-4f85-b217-17ebc2e85302"]
 },
 WindowSize->{808, 911},
-WindowMargins->{{715, Automatic}, {130, Automatic}},
+WindowMargins->{{804, Automatic}, {Automatic, 105}},
 FrontEndVersion->"12.0 for Mac OS X x86 (64-bit) (April 8, 2019)",
 StyleDefinitions->"Default.nb"
 ]
@@ -191,7 +216,8 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[558, 20, 7569, 155, 598, "Input",ExpressionUUID->"b0bad5b8-7190-4262-86d2-029e395fd67e"]
+Cell[558, 20, 8639, 176, 661, "Input",ExpressionUUID->"b0bad5b8-7190-4262-86d2-029e395fd67e"],
+Cell[9200, 198, 148, 2, 30, "Input",ExpressionUUID->"effeafa5-1f5c-4f85-b217-17ebc2e85302"]
 }
 ]
 *)

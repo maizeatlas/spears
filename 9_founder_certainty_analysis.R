@@ -38,7 +38,7 @@ mlinfo <- list()
 for (i in 1:chrom){
   
   setwd(paste0(wd,'/MACH/chrom',i))
-  mlinfo[[i]]<- read.table(paste0("step2_chrom_",i,".mlinfo",sep=""), header=T, sep="\t")
+  mlinfo[[i]]<- read.table(paste0("imputed_chrom_",i,".mlinfo",sep=""), header=T, sep="\t")
   
 }
 
@@ -59,16 +59,16 @@ test_acc <- list()
 for (c in 1:chrom){
   ## Probabilities from RABBIT for each chromosome
   mnum <- nrow(subset(key,key$CHROM==c))
-  snps <- read.table(paste("./RABBIT/SimData_Rsq",rsq*100,"pct_chrom",c,"_RABBIT_jointModel_OPD_output_magicReconstruct_Summary.csv", sep=""),head=F,
+  snps <- read.table(paste("./RABBIT/reconstructed_chrom_",c,"_jointModel_OPD_summary.csv", sep=""),head=F,
                      sep=",",skip=(9 + gtnum + sn + fn),nrows = 1, stringsAsFactors = F)
-  haplo_prob <- read.table(paste("./RABBIT/SimData_Rsq",rsq*100,"pct_chrom",c,"_RABBIT_jointModel_OPD_output_magicReconstruct_Summary.csv", sep=""),head=F,
+  haplo_prob <- read.table(paste("./RABBIT/reconstructed_chrom_",c,"_jointModel_OPD_summary.csv", sep=""),head=F,
                            sep=",",skip=(9 + gtnum + sn + fn + 3),nrows = ((gtnum*sn)), stringsAsFactors = F)
   names(haplo_prob) <- snps
   #haplo_prob <- haplo_prob[-c(1:2),]
   haplo_prob <- separate(haplo_prob, SNP, c("Sample", "GT"), sep="_")
   
   ## Founder key from RABBIT output
-  haplo_prob_key <- read.table(paste("./RABBIT/SimData_Rsq",rsq*100,"pct_chrom",c,"_RABBIT_jointModel_OPD_output_magicReconstruct_Summary.csv", sep=""),head=T,
+  haplo_prob_key <- read.table(paste("./RABBIT/reconstructed_chrom_",c,"_jointModel_OPD_summary.csv", sep=""),head=T,
                                sep=",",skip=(7 + sn + fn),nrows = gtnum, stringsAsFactors = F)
   samples <- as.data.frame(as.character(unique(haplo_prob$Sample)),stringsAsFactors = FALSE)
   ## Assign ancester for each sample at each marker based on RABBIT output

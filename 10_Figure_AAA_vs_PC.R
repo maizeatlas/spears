@@ -22,7 +22,7 @@ key <- read.table(user[user[[1]]=="fd",2], head=T, stringsAsFactors = FALSE, sep
 key <- rename.vars(key,"chr","CHROM")
 
 #Output from mldiff analysis
-ml_bymarker <- read.csv("ml_diff_bymarker_16JUN20.csv",head=T, stringsAsFactors = F)
+ml_bymarker <- read.csv("ml_diff_bymarker.csv",head=T, stringsAsFactors = F)
 
 #Compare to Ancestral Assignement Accuracy results from Viterbi output
 AAA <- read.csv(user[user[[1]]=="marker",2],head=T,stringsAsFactors = F)
@@ -33,6 +33,7 @@ for_plot <- merge(for_plot,key[,1:3],sort = F)
 
 # All chromosomes
 for_plot_all <- melt(as.data.table(for_plot), id.vars = c("snpID","CHROM","POS"), measure.vars = c("mean_AAA","ml_diff"))
+
 #Centromere and chromosome information for rug plots
 agpv4Ideogram <- read.table("chrom_coord.csv",head=T,sep=",",stringsAsFactors = F)
 
@@ -51,8 +52,8 @@ ggplot(for_plot_all) +
              pch=21, size=5, stroke=1, fill="grey60", colour="black") +
   facet_grid(CHROM ~ ., switch="y") +
   xlab("Position") + ylab("Chromosome") +
-  #scale_x_continuous(breaks=c(0,5e7,1e8,1.5e8,2e8,2.5e8,3e8),
-  #                   labels=c("0 Mb", "50 Mb", "100 Mb", "150 Mb", "200 Mb", "250 Mb", "300 Mb")) +
+  scale_x_continuous(breaks=c(0,5e7,1e8,1.5e8,2e8,2.5e8,3e8),
+                     labels=c("0 Mb", "50 Mb", "100 Mb", "150 Mb", "200 Mb", "250 Mb", "300 Mb")) +
   theme(plot.background = element_blank()
         #,legend.position="none"
         #,legend.direction="vertical"

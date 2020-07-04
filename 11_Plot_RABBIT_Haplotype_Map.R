@@ -10,7 +10,7 @@ library("tidyr")
 # Working directory
 wd <- "~/working/directory/"
 #Sample to plot (format "sim.sample#")
-s_id <- "sim.sample5577"
+s_id <- "sim.sample5564"
 #Color Scheme for Parent haplotype blocks (needs to be length of total number of founders)
 cbbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
@@ -48,14 +48,14 @@ fn <- length(names(key))-7 # Number of founders
 gtnum <- sum(seq(1,fn,1)) # Number of possible genotype combinations
 
 # Diplotype key from RABBIT Output
-d.key <- read.table(paste("./RABBIT/SimData_Rsq",rsq*100,"pct_chrom1_RABBIT_jointModel_OVD_output_magicReconstruct_Summary.csv", sep=""),head=T,
+d.key <- read.table(paste("./RABBIT/reconstructed_chrom_1_jointModel_OVD_summary.csv", sep=""),head=T,
                     sep=",",skip=(9 + sn + 2*fn),nrows = (fn*fn), stringsAsFactors = F)
 d.key$Diplotype <- as.numeric(sub("diplotype","", d.key$Diplotype))
 
 ## SNP index information for each chromosome
 SNPkey <- list()
 for (i in 1:chrom){
-  SNPkey[[i]] <- read.table(paste("./RABBIT/SimData_Rsq",rsq*100,"pct_chrom",i,"_RABBIT_jointModel_OVD_output_magicReconstruct_Summary.csv",sep=""),head=F,
+  SNPkey[[i]] <- read.table(paste("./RABBIT/reconstructed_chrom_",i,"_jointModel_OVD_summary.csv",sep=""),head=F,
                             sep=",", skip=1, nrows=2, stringsAsFactors = F)
   SNPkey[[i]] <- as.data.frame(t(SNPkey[[i]][,2:ncol(SNPkey[[i]])]))
   SNPkey[[i]] <- rename.vars(SNPkey[[i]],c("V1","V2"),c("SNP","CHROM"))
@@ -68,7 +68,7 @@ for (i in 1:chrom){
 datalist3 <- list()
 for (c in 1:chrom){
   
-    vit_path <- read.table(paste("./RABBIT/SimData_Rsq",rsq*100,"pct_chrom",c,"_RABBIT_jointModel_OVD_output_magicReconstruct_Summary.csv",sep=""),head=T,
+    vit_path <- read.table(paste("./RABBIT/reconstructed_chrom_",c,"_jointModel_OVD_summary.csv",sep=""),head=T,
                            sep=",", skip=(11 + sn + 2*fn + (fn*fn)), nrows=sn, stringsAsFactors = F)
     dat <- subset(vit_path,vit_path==s_id)
     #dat <- as.data.frame(unlist(strsplit(vit_path[i,2],split = "-")))

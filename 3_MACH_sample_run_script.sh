@@ -17,7 +17,7 @@
 
 step1() {
   cd chrom$i
-  ./mach1 -d simdata_chrom_$i.dat -p simdata_chrom_$i.PED -s founders_chrom_$i.snps -h founders_chrom_$i.haplos --greedy -r 1000 --prefix step1_chrom_$i
+  ./mach1 -d progeny_chrom_$i.dat -p progeny_chrom_$i.PED -s parents_chrom_$i.snps -h parents_chrom_$i.haplos --greedy -r 100 --prefix imputed_chrom_$i
 }
 
 for i in {1..10}; do step1 i & done
@@ -26,7 +26,7 @@ for i in {1..10}; do step1 i & done
 #runs MaCH step 2 on individual chroms in parallel
 step2() {
   cd chrom$i
-  ./mach1 -d simdata_chrom_$i.dat -p simdata_chrom_$i.PED -s founders_chrom_$i.snps -h founders_chrom_$i.haplos --crossover step1_chrom_$i.rec --errormap step1_chrom_$i.erate --greedy --mle --mldetails --prefix step2_chrom_$i
+  ./mach1 -d progeny_chrom_$i.dat -p progeny_chrom_$i.PED -s parents_chrom_$i.snps -h parents_chrom_$i.haplos --crossover imputed_chrom_$i.rec --errormap imputed_chrom_$i.erate --greedy --mle --mldetails --prefix imputed_chrom_$i
 }
 
 for i in {1..10}; do step2 i & done

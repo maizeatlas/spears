@@ -17,8 +17,8 @@ setwd(wd)
 #User inputs (read from file created in 2_SAEGUS_to_MACH_format.R
 user <- read.table("user_input.txt", header = F, sep = "\t", stringsAsFactors = F)
 
-# Name of founder key data
-fd <- user[user[[1]]=="fd",2]
+# Name of parent key data
+#fd <- user[user[[1]]=="fd",2]
 # Number of chromosomes
 chrom <- as.numeric(user[user[[1]]=="chrom",2])
 # Name of Population (for MACH output)
@@ -31,42 +31,44 @@ rsq <- as.numeric(user[user[[1]]=="rsq",2])
 ld <- user[user[[1]]=="ld",2]
 #Known GT Data
 kd <- user[user[[1]]=="kd",2]
+#Number of parents
+fn <- as.numeric(user[user[[1]]=="fn",2])
 
-# Founder key, known GT, and known parent-of-origin
-key <- read.table(fd, head=T, stringsAsFactors = FALSE, sep="\t") #founder key
-key <- rename.vars(key,"chr","CHROM") #Rename chromosome column to match RABBIT output
-key[,8:ncol(key)] <- lapply(key[,8:ncol(key)], gsub, pattern='/[0-9]', replacement='') #Remove second allele from GT, (0/0 to 0) to be used for inferring GT based on parent of origin
-#Known GT
+# parent key, known GT, and known parent-of-origin
+#Known GT (subset parent key from this data)
 GT_known <- read.csv(kd, head=T, stringsAsFactors = FALSE) #Known GT data created from script 1_SAEGUS_to_MACH_format.R
-err_miss_dist <- GT_known[,c(1,5,6)]
+err_miss_dist <- GT_known[,c(1,5,6)] #distribution of genotyping error and missing data
+key <- GT_known[,1:(8+fn)] #parent key
 GT_known <- melt(as.data.table(GT_known), id.vars = c("snpID","CHROM"), measure.vars = patterns("^sim.sample")) #Reformat known data into long format
 GT_known <- rename.vars(GT_known,c("variable","value"),c("sample","sim_GT")) #Assign variable names to melted columns
+
+#Format parent key
+key[,9:ncol(key)] <- lapply(key[,9:ncol(key)], gsub, pattern='/[0-9]', replacement='') #Remove second allele from GT, (0/0 to 0) to be used for inferring GT based on parent of origin
+
 #Known parent-of-origin from SAEGUS output
-poo_known <- read.csv(ld, head=T, stringsAsFactors = FALSE)
+origin_known <- read.csv(ld, head=T, stringsAsFactors = FALSE)
 # Replace index with name of parent
 # 1=ParentA, 2=ParentB, 3=ParentC, 4=ParentD, 5=ParentE, 6=ParentF, 7=ParentG, key for test data
-parents <- names(key[,8:ncol(key)]) #parent names taken from founder key
+parents <- names(key[,9:ncol(key)]) #parent names taken from parent key
 for (i in 1:length(parents)){
-  poo_known[which(poo_known$parent_of_origin==i),4] <- parents[i]
+  origin_known[which(origin_known$parent_of_origin==i),4] <- parents[i]
 }
 
-poo_known <- dcast(as.data.table(poo_known), sample + snpID ~ allele) #expand poo data so there is a column for each homolog
-poo_known <- rename.vars(poo_known, c("snpID","a1","a2"), c("snpID","sim_parent1","sim_parent2"))
-poo_known <- merge(poo_known,key[,1:2],all.x = T,by="snpID", sort=F) #Add chrom variable 
-poo_known$sample <- paste0("sim.sample",poo_known$sample) #Rename samples to match RABBIT output
+origin_known <- dcast(as.data.table(origin_known), sample + snpID ~ allele) #expand origin data so there is a column for each homolog
+origin_known <- rename.vars(origin_known, c("snpID","a1","a2"), c("snpID","sim_parent1","sim_parent2"))
+origin_known <- merge(origin_known,key[,1:2],all.x = T,by="snpID", sort=F) #Add chrom variable 
+origin_known$sample <- paste0("sim.sample",origin_known$sample) #Rename samples to match RABBIT output
 #####
 # Format RABBIT OVD Output
-fn <- length(parents) # Number of founders
-#gtnum <- sum(seq(1,fn,1)) # Number of possible genotype combinations, used to subset the correct rows for diplotype key
 
 # Diplotype key from RABBIT Output
 #Based on output name from RABBIT output script
 #Number of rows to skip when reading in data changes depending on number of parents and number of samples, 
 #the formula 9 + sn +2*fn accounts for this. 9 is the number of headers (doesn't change in RABBIT output, 
 #sn is sample number and accounts for rows that have likelihood output for each samples, and 2*fn accounts 
-#for the rows that have the original founder GT data and haplotype columns
+#for the rows that have the original parent GT data and haplotype columns
 #
-d.key <- read.table(paste("./RABBIT/SimData_Rsq",rsq*100,"pct_chrom1_RABBIT_jointModel_OVD_output_magicReconstruct_Summary.csv", sep=""),head=T,
+d.key <- read.table(paste("./RABBIT/reconstructed_chrom_1_jointModel_OVD_summary.csv", sep=""),head=T,
                              sep=",",skip=(9 + sn + 2*fn),nrows = (fn*fn), stringsAsFactors = F)
 d.key$Diplotype <- as.numeric(sub("diplotype","", d.key$Diplotype))
 
@@ -76,12 +78,12 @@ d.key$Diplotype <- as.numeric(sub("diplotype","", d.key$Diplotype))
 #so if snpID skips a number it wouldn't match what the viterbi output is. 
 #This index "SNPkey[[i]]$index" accounts for this difference.
 SNPkey <- list()
-for (i in 1:chrom){
-SNPkey[[i]] <- read.table(paste("./RABBIT/SimData_Rsq",rsq*100,"pct_chrom",i,"_RABBIT_jointModel_OVD_output_magicReconstruct_Summary.csv",sep=""),head=F,
+for (c in 1:chrom){
+SNPkey[[c]] <- read.table(paste("./RABBIT/reconstructed_chrom_",c,"_jointModel_OVD_summary.csv",sep=""),head=F,
                     sep=",", skip=1, nrows=2, stringsAsFactors = F)
-SNPkey[[i]] <- as.data.frame(t(SNPkey[[i]][,2:ncol(SNPkey[[i]])]))
-SNPkey[[i]] <- rename.vars(SNPkey[[i]],c("V1","V2"),c("SNP","CHROM"))
-SNPkey[[i]]$index <- seq(1,nrow(SNPkey[[i]]),1)
+SNPkey[[c]] <- as.data.frame(t(SNPkey[[c]][,2:ncol(SNPkey[[c]])]))
+SNPkey[[c]] <- rename.vars(SNPkey[[c]],c("V1","V2"),c("SNP","CHROM"))
+SNPkey[[c]]$index <- seq(1,nrow(SNPkey[[c]]),1)
 }
 
 
@@ -93,13 +95,13 @@ datalist3 <- list() #create empty list to store formatted output from RABBIT and
 for (c in 1:chrom){
   
   datalist <- list() #create empty list to store each sample for each chromosome
-  key_sub2 <- subset(key, key$CHROM == c) #subset founder data needed for chromosome c
-  key_sub2 <- key_sub2[which(key_sub2$snpID %in% SNPkey[[c]]$SNP),] #subset founder data to only include SNPs in RABBIT output (post rsq filtering)
+  key_sub2 <- subset(key, key$CHROM == c) #subset parent data needed for chromosome c
+  key_sub2 <- key_sub2[which(key_sub2$snpID %in% SNPkey[[c]]$SNP),] #subset parent data to only include SNPs in RABBIT output (post rsq filtering)
 
   
 for(i in 1:sn){
   
-  vit_path <- read.table(paste("./RABBIT/SimData_Rsq",rsq*100,"pct_chrom",c,"_RABBIT_jointModel_OVD_output_magicReconstruct_Summary.csv",sep=""),head=T,
+  vit_path <- read.table(paste("./RABBIT/reconstructed_chrom_",c,"_jointModel_OVD_summary.csv",sep=""),head=T,
                               sep=",", skip=(11 + sn + 2*fn + (fn*fn)), nrows=sn, stringsAsFactors = F)
 
   #Subset sample i and Separate viterbi path
@@ -133,19 +135,19 @@ for(i in 1:sn){
                                 snpID=seq(as.numeric(datalist[[i]][x,"SNP_start"]), as.numeric(datalist[[i]][x,"SNP_stop"]) ,by=1),
                                 sample = as.character(datalist[[i]][x,"sample"]),
                                 CHROM = as.numeric(datalist[[i]][x,"CHROM"]),
-                                OVD_founder = as.character(datalist[[i]][x,"founder"])
+                                OVD_parent = as.character(datalist[[i]][x,"founder"])
                               ) } ))
   
   #Separate diplotypes for easy comparison
-  datalist[[i]] <- separate(datalist[[i]], OVD_founder, c("OVD_founder1", "OVD_founder2"), sep="\\|")
-  datalist[[i]]$OVD_allele1 <- datalist[[i]]$OVD_founder1 #create new column to store parent assignment, will be reformatting OVD_founder1 to GT in next steps
-  datalist[[i]]$OVD_allele2 <- datalist[[i]]$OVD_founder2 #create new column to store parent assignment
+  datalist[[i]] <- separate(datalist[[i]], OVD_parent, c("OVD_parent1", "OVD_parent2"), sep="\\|")
+  datalist[[i]]$OVD_allele1 <- datalist[[i]]$OVD_parent1 #create new column to store parent assignment, will be reformatting OVD_parent1 to GT in next steps
+  datalist[[i]]$OVD_allele2 <- datalist[[i]]$OVD_parent2 #create new column to store parent assignment
   datalist[[i]] <- datalist[[i]][which(datalist[[i]]$snpID %in% key_sub2$snpID),] #subset based on snps actually analyzed (datframe is created by filling in gaps between start and stop, some snps don't exist)
   
   for (j in 1:length(parents)){
   
     datalist[[i]][,6:7] <- apply(as.data.frame(datalist[[i]][,6:7]),2,function(x) 
-    ifelse(x==names(key_sub2)[j+7],as.character(key_sub2[,(j+7)]),x)) #reformat parent assignment into genotypes
+    ifelse(x==names(key_sub2)[j+8],as.character(key_sub2[,(j+8)]),x)) #reformat parent assignment into genotypes
   }
   
 }
@@ -153,8 +155,8 @@ for(i in 1:sn){
   datalist3[[c]] <- as.data.frame(do.call("rbind",datalist))
   datalist3[[c]] <- datalist3[[c]][which(datalist3[[c]]$snpID %in% SNPkey[[c]]$SNP),] #subset only markers that met the original rsq threshold
   
-  #Now merge known data with inferred data for calculating statistics, this will have known parent-of-origin (sim_parent1, sim_parent2), inferred parent-of-origin (OVD_founder1,OVD_founder2), known GT (sim_allele1,sim_allele2), and inferred GT (OVD_allele1,OVD_allele2)
-  datalist3[[c]] <- merge(datalist3[[c]],subset(poo_known, poo_known$CHROM==c), sort = F, all.x=T)
+  #Now merge known data with inferred data for calculating statistics, this will have known parent-of-origin (sim_parent1, sim_parent2), inferred parent-of-origin (OVD_parent1,OVD_parent2), known GT (sim_allele1,sim_allele2), and inferred GT (OVD_allele1,OVD_allele2)
+  datalist3[[c]] <- merge(datalist3[[c]],subset(origin_known, origin_known$CHROM==c), sort = F, all.x=T)
   datalist3[[c]] <- merge(datalist3[[c]],subset(GT_known, GT_known$CHROM==c), sort = F, all.x=T)
   datalist3[[c]] <- separate(datalist3[[c]], sim_GT, c("sim_allele1", "sim_allele2"), sep="/")
   
@@ -170,11 +172,11 @@ AAA_bymarker <- list()
 AAA_bysample <- list()
 for (c in 1:chrom){
   
-  #calculate the proportion of matching sites, because this is phase independent it takes into account both possible orientations for het sites. Also, this includes sites that may only match 1 of 2 founders (assigned 0.5 as a half match)
-  for_AAA[[c]]$parent_match <- ifelse(paste(for_AAA[[c]]$OVD_founder1,"|", for_AAA[[c]]$OVD_founder2,sep="") == paste(for_AAA[[c]]$sim_parent1,"|",for_AAA[[c]]$sim_parent2,sep=""), 1,
-                                     ifelse(paste(for_AAA[[c]]$OVD_founder1,"|", for_AAA[[c]]$OVD_founder2,sep="") == paste(for_AAA[[c]]$sim_parent2,"|",for_AAA[[c]]$sim_parent1,sep=""),1,
-                                            ifelse((for_AAA[[c]]$OVD_founder1 == for_AAA[[c]]$sim_parent1 | for_AAA[[c]]$OVD_founder1 == for_AAA[[c]]$sim_parent2),0.5,
-                                                   ifelse((for_AAA[[c]]$OVD_founder2 == for_AAA[[c]]$sim_parent1 | for_AAA[[c]]$OVD_founder2 == for_AAA[[c]]$sim_parent2),0.5,0))))
+  #calculate the proportion of matching sites, because this is phase independent it takes into account both possible orientations for het sites. Also, this includes sites that may only match 1 of 2 parents (assigned 0.5 as a half match)
+  for_AAA[[c]]$parent_match <- ifelse(paste(for_AAA[[c]]$OVD_parent1,"|", for_AAA[[c]]$OVD_parent2,sep="") == paste(for_AAA[[c]]$sim_parent1,"|",for_AAA[[c]]$sim_parent2,sep=""), 1,
+                                     ifelse(paste(for_AAA[[c]]$OVD_parent1,"|", for_AAA[[c]]$OVD_parent2,sep="") == paste(for_AAA[[c]]$sim_parent2,"|",for_AAA[[c]]$sim_parent1,sep=""),1,
+                                            ifelse((for_AAA[[c]]$OVD_parent1 == for_AAA[[c]]$sim_parent1 | for_AAA[[c]]$OVD_parent1 == for_AAA[[c]]$sim_parent2),0.5,
+                                                   ifelse((for_AAA[[c]]$OVD_parent2 == for_AAA[[c]]$sim_parent1 | for_AAA[[c]]$OVD_parent2 == for_AAA[[c]]$sim_parent2),0.5,0))))
 
   #Aggregate match data by sample and by marker and calculate mean AAA for each chromosome
   AAA_bymarker[[c]] <- aggregate(for_AAA[[c]][,12], list(for_AAA[[c]]$snpID), mean)
@@ -254,7 +256,7 @@ for (i in 1:chrom){
   list_df[[i]] <- subset(GAA[[i]],GAA[[i]]$GT_match==1)
   #list_df[[i]] <- AAG[[i]]
   list_df[[i]] <- subset(list_df[[i]],list_df[[i]]$sim_allele1!=list_df[[i]]$sim_allele2)
-  list_df[[i]]$switch <- ifelse(list_df[[i]]$sim_parent1==list_df[[i]]$OVD_founder1 & list_df[[i]]$sim_parent2==list_df[[i]]$OVD_founder2,
+  list_df[[i]]$switch <- ifelse(list_df[[i]]$sim_parent1==list_df[[i]]$OVD_parent1 & list_df[[i]]$sim_parent2==list_df[[i]]$OVD_parent2,
                                 0,1)
 }
 
@@ -281,8 +283,7 @@ PAA <- as.data.frame(rowMeans(allrunsum2))
 #Add sample names to dataframe
 PAA$sample <- row.names(allrunsum2)
 names(PAA) <- c("PAA","sample")
-#calculate actual SER from phasing accuracy
-#SER$SER <- 1-SER$SER
+#mean and standard deviation
 mean(PAA$PAA) #mean SER
 sd(PAA$PAA) #sd of SER
 
@@ -295,14 +296,14 @@ chrom_CO <- list()
 for (i in 1:chrom) {
   CO <- datalist3[[i]]
   CO <- as.data.table(CO)
-  CO <- melt(CO, id.vars = c("snpID","CHROM","sample"), measure.vars = c("OVD_founder1","OVD_founder2"))
+  CO <- melt(CO, id.vars = c("snpID","CHROM","sample"), measure.vars = c("OVD_parent1","OVD_parent2"))
   CO <- CO[order(CO$sample,as.numeric(CO$snpID)),]
-  CO <- rename.vars(CO, c("variable","value"),c("homolog","founder"))
-  CO$homolog <- ifelse(CO$homolog=="OVD_founder1",1,2)
+  CO <- rename.vars(CO, c("variable","value"),c("homolog","parent"))
+  CO$homolog <- ifelse(CO$homolog=="OVD_parent1",1,2)
   chrom_CO[[i]] <- CO
 }
 
-###For each homolog (b) in chromosome (j) for each sample (i), calculate the number of times the founder changes (a crossover) and sum total crossovers
+###For each homolog (b) in chromosome (j) for each sample (i), calculate the number of times the parent changes (a crossover) and sum total crossovers
 samples <- as.data.frame(unique(chrom_CO[[1]]$sample),stringsAsFactors = FALSE)
 look_run = NULL
 for (j in 1:chrom){
@@ -311,7 +312,7 @@ for (j in 1:chrom){
     runs <- vector(length=0)
     for (b in 1:2)
     {
-      runs= c(runs, length(rle(subset(chrom_CO[[j]], sample==i & homolog==b)$founder)$lengths))
+      runs= c(runs, length(rle(subset(chrom_CO[[j]], sample==i & homolog==b)$parent)$lengths))
     }
     runsum[[i]] <- sum(runs)
   }
@@ -345,7 +346,7 @@ for (i in 1:chrom) {
   CO <- as.data.table(CO)
   CO <- melt(CO, id.vars = c("snpID","CHROM","sample"), measure.vars = c("sim_parent1","sim_parent2"))
   CO <- CO[order(CO$sample,as.numeric(CO$snpID)),]
-  CO <- rename.vars(CO, c("variable","value"),c("homolog","founder"))
+  CO <- rename.vars(CO, c("variable","value"),c("homolog","parent"))
   CO$homolog <- ifelse(CO$homolog=="sim_parent1",1,2)
   chrom_CO[[i]] <- CO
 }
@@ -358,7 +359,7 @@ for (j in 1:chrom){
     runs <- vector(length=0)
     for (b in 1:2)
     {
-      runs= c(runs, length(rle(subset(chrom_CO[[j]], sample==i & homolog==b)$founder)$lengths))
+      runs= c(runs, length(rle(subset(chrom_CO[[j]], sample==i & homolog==b)$parent)$lengths))
     }
     runsum[[i]] <- sum(runs)
   }

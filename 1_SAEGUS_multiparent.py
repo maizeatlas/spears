@@ -160,9 +160,9 @@ index = pd.MultiIndex.from_product([sample, allele, locus], names=['sample', 'al
 lin2 = pd.DataFrame(data=lin, index=index, columns=['parent_of_origin'])
 
 #Save lineage tracking information
-lin2.to_csv('simdata_n1000_parent_of_origin.csv')
+lin2.to_csv('known_parent_of_origin.csv')
 
 ### Save 1000 sampled individuals, contains ind_id and 2*numLoci columns (1 for each allele)
-saveCSV(sub_sample, filename='simdata_n1000_GT.csv', infoFields=['ind_id'], sexFormatter=None,affectionFormatter=None)
+saveCSV(sub_sample, filename='known_GT.csv', infoFields=['ind_id'], sexFormatter=None,affectionFormatter=None)
 
 

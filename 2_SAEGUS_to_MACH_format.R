@@ -20,7 +20,7 @@ chrom <- 10
 # Name of Population (for MACH output)
 popID <- "Pop"
 # Sample number
-sn <- 100
+sn <- 1000
 #Rsq Threshold (for imputation output)
 rsq <- 0.8
 #Genotyping Error

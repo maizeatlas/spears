@@ -13,14 +13,14 @@ We developed SPEARS to allow for start-to-finish analysis of a given population 
 
 ## Description and user requirements for each script
 
-We have provided parent test data with 10,000 markers (test_founder_key_vcf.txt) that can be used for running through the pipeline quickly. We have also included a parent data set with 47,078 markers (used for manuscript, founder_key_vcf.txt), although this takes longer to run. These scripts need to be run in order.
+We have provided parent test data with 10,000 markers (test_parent_key_vcf.txt) that can be used for running through the pipeline quickly. We have also included a parent data set with 47,078 markers (used for manuscript, parent_key_vcf.txt), although this takes longer to run. These scripts need to be run in order.
 
 1. **1_SAEGUS_multiparent.py**
 
 This script is specific for the multiparent population described in the manuscript. It takes a user supplied genetic map and pedigree information and generates genotype and parent-of-origin data for 1000 random individuals from the last generation in the pedigree. It follows the tutorial for SAEGUS available on github. Output includes two files: 1) known_GT.csv (this include genotypes for all sampled progeny in the format: "0/0","0/1","1/0","1/1" and is required input for 2_SAEGUS_to_MACH_format.R) and 2) known_parent_of_origin.csv (origin of each allele for each marker in each individual and is required input for 7_Calculate_OVD_SPEARS_Metrics.R). **It needs to be customized based on user's population.**
 
 * **Required Input Files**
-  * Founder Key Data (example: founder_key_vcf.txt): Tab-delimited text document formatted with the following headers in this order: **snpID, chr, POS, cM, F_MISS, REF, ALT, founder1, founder2, founder3, ... , foundern**
+  * Parent Key Data (example: parent_key_vcf.txt): Tab-delimited text document formatted with the following headers in this order: **snpID, chr, POS, cM, F_MISS, REF, ALT, parent1, parent2, parent3, ... , parentn**
    * Header Descriptions
      * **snpID**: numerical assignment to each marker (ordered by chr and POS) can skip numbers, but should be consecutive numbers based on chr and POS
      * **chr**: numeric assignment to the chromosome for each marker
@@ -29,17 +29,17 @@ This script is specific for the multiparent population described in the manuscri
      * **REF**: Reference allele for each marker
      * **ALT**: Alternate allele for each marker
      * **F_MISS**: A number between 0 and 1 that corresponds to the proportion of progeny at a given marker with missing data (1 is completely missing, 0 is all individuals have genotype data)
-     * **founder1 ... foundern**: columns corresponding to the founders/parents of the population. Column names can be any character name (founder1, parent1, CML10, etc...). Genotypes in each founder column are bi-allelic vcf format and must be homozygous (0/0 or 1/1).
+     * **parent1 ... parentn**: columns corresponding to the parents of the population. Column names can be any character name (founder1, parent1, CML10, etc...). Genotypes in each founder column are bi-allelic vcf format and must be homozygous (0/0 or 1/1).
   
 
 2. **2_SAEGUS_to_MACH_format.R**
 
-Takes output from 1_SAEGUS.py (formatted as described above) and reformats for use in MaCH. User defines all parameters in this script as follows: wd (working directory), sd (name of GT output from SAEGUS), ld (name of parent-of-origin output from SAEGUS), fd (name of founder data key), chrom (total number of chromosomes), popID (ID assigned to population for MACH input), sn (total number of progeny), rsq (R-square threshold for MACH output), and g_error (global genotyping error). These parameters are outputted in a file (user_input.txt) that will be referenced in all downstream scripts. It also outputs known GT data (reformatted from SAEGUS output, known_GT2.csv, required input for 7_Calculate_OVD_SPEARS_Metrics.R). Creates a subfolder in the working directory called MaCH and within this subfolder creates a folder for each chromosome. In each chromosome folder, it creates the 4 input files required by MaCH for imputation: 1) parents_chrom_n.haplos, 2) parents_chrom_n.snps, 3) progeny_chrom_n.dat, 4) progeny_chrom_n.PED.
+Takes output from 1_SAEGUS.py (formatted as described above) and reformats for use in MaCH. User defines all parameters in this script as follows: wd (working directory), sd (name of GT output from SAEGUS), ld (name of parent-of-origin output from SAEGUS), fd (name of parent data key), chrom (total number of chromosomes), popID (ID assigned to population for MACH input), sn (total number of progeny), rsq (R-square threshold for MACH output), and g_error (global genotyping error). These parameters are outputted in a file (user_input.txt) that will be referenced in all downstream scripts. It also outputs known GT data (reformatted from SAEGUS output, known_GT2.csv, required input for 7_Calculate_OVD_SPEARS_Metrics.R). Creates a subfolder in the working directory called MaCH and within this subfolder creates a folder for each chromosome. In each chromosome folder, it creates the 4 input files required by MaCH for imputation: 1) parents_chrom_n.haplos, 2) parents_chrom_n.snps, 3) progeny_chrom_n.dat, 4) progeny_chrom_n.PED.
 
 * **Required Input Files**
   * Simulated GT output (from 1_SAEGUS_multiparent.py) (example: known_GT.csv)
     * Formatted with headers: **ind_id, markers as: 1_1 (snpID 1, allele 1), 1_2 (snpID 2, allele 2) ... n_1, n_2 (for n number of markers)**. Column names for each marker/allele can be formatted as any character name as long as each marker is in order based on chromosome and position and each allele for each marker are next to each other (example: marker1_a1, marker1_a2, marker2_a1, marker2_a2 would also be appropriate headers).
-  * Founder Key Data (example: founder_key.txt): see description in 1_SAEGUS.py.
+  * Parent Key Data (example: parent_key.txt): see description in 1_SAEGUS.py.
 
 3. **3_MACH_sample_run_script.sh**
 
@@ -49,7 +49,7 @@ Takes output from 2_SAEGUS_to_MaCH_format.R and performs imputation using MaCH. 
   * Output from 2_SAEGUS_to_MACH_format.R 
     * parents_chrom_c.haplos: parent haplotypes for each chromosome n. 
     * parents_chrom_c.snps: snps that are present in the parent data for each chromosome n. 
-    * progeny_chrom_c.dat: snps that are present in the population that overlap with the founder snps for each chromosome n. 
+    * progeny_chrom_c.dat: snps that are present in the population that overlap with the parent snps for each chromosome n. 
     * progeny_chrom_c.PED: genotypes for each sample for the snps listed in progeny_chrom_n.dat. 
 
 4. **4_MACH_to_RABBIT_format.R**
@@ -61,7 +61,7 @@ Takes output from 3_MACH_sample_run_script.sh (specifically, the .mlgeno and .ml
   * Output from 3_MACH_sample_run_script.sh required for next step (other files are outputted see MACH for details)
     * imputed_chrom_c.mlgeno: genotype data for all samples for each chromosome n.
     * imputed_chrom_c.mlinfo: stats (including Rsq) for each marker, used for filtering.
-  * Founder Key Data
+  * Parent Key Data
 
 5. **5_RABBIT_run_jointModel_OVD.nb**
 
@@ -94,15 +94,15 @@ Produces Figure S5 from Manuscript.
 
 8. **8_RABBIT_run_jointModel_OPD.nb**
 
-Runs the "origPosteriorDecoding" algorithm from RABBIT. Output from this can be used to calculate founder certainty. This is specific for the test population described in the manuscript and needs to be modified (specifically, the popdesign field [see RABBIT tutorial and refer to Zheng et al. 2015 for calculating priors]) and run for each chromosome.
+Runs the "origPosteriorDecoding" algorithm from RABBIT. Output from this can be used to calculate parent certainty. This is specific for the test population described in the manuscript and needs to be modified (specifically, the popdesign field [see RABBIT tutorial and refer to Zheng et al. 2015 for calculating priors]) and run for each chromosome.
 
 * **Required Input Files**
   * Output from 4_MACH_to_RABBIT_format.R
     * reconstructed_chrom_c_RABBIT_input.csv: an individual file for each chromosome n that includes markers that have been retained based on a minimum Rsq value (##).
  
-9. **9_founder_certainty_analysis**
+9. **9_parent_certainty_analysis**
 
-Takes output from 9_RABBIT_run_jointModel_OPD.nb and calculates the average founder certainty across all samples (the difference in probabilities between the top two founders at each marker). Can be used to compare to AAA. 
+Takes output from 9_RABBIT_run_jointModel_OPD.nb and calculates the average parent certainty across all samples (the difference in probabilities between the top two parents at each marker). Can be used to compare to AAA. 
 
 * **Required Input Files**
   * Output from 9_RABBIT_run_jointModel_OPD.nb
@@ -114,9 +114,9 @@ Creates a figure that shows AAA and Parent Certainty for each chromosome. See Fi
 
 * **Required Input Files**
   * user_input.txt
-  * Founder Key Data
+  * Parent Key Data
   * File containing centromere and chromosome size information (see example: chrom_coord.csv)
-  * Output from 9_founder_certainty_analysis (ml_diff_by_marker.csv)
+  * Output from 9_parent_certainty_analysis (ml_diff_by_marker.csv)
   * Output from 6_Calculate_OVD_SPEARS_metrics.R (SPEARS_by_marker_Metrics.csv)
   
 11. **11_Plot_RABBIT_Haplotype_Map.R**
@@ -125,7 +125,7 @@ Creates a haplotype map for a single sample defined by user. See right portion o
 
 * **Required Input Files**
   * user_input.txt
-  * Founder Key Data
+  * Parent Key Data
   * File containing centromere and chromosome size information (see example: chrom_coord.csv)
   * Output from 5_RABBIT_run_jointModel_OVD.nb
     * reconstructed_chrom_c_jointModel_OVD_summary.csv: the summary output from RABBIT.

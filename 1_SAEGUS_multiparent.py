@@ -14,7 +14,7 @@ from numpy import savetxt
 #genetic_map = np.array(pd.read_csv('test_founder_data_key.txt', sep='\t'))
 founder = pd.read_csv('founder_key_25K_vcf_28FEB20.txt', sep='\t')
 #Subset genotype data
-genotypes = np.array(founder.iloc[:,8:])
+genotypes = np.array(founder.iloc[:,7:])
 #genotypes = founder.iloc[:,8:]
 genetic_map = founder.to_numpy()
 #Need to reassign genotypes in a numeric format for use in simuPOP (A=0,C=1,T=2,G=3)
